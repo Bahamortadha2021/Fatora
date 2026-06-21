@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title> نظام الفوترة الجزائري</title>
+    <title>فَوْتَرَة كامل - نظام الفوترة الجزائري (كاميرا خلفية للمسح)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,30 +22,6 @@
         .animate-in { animation: in 0.3s ease-out; }
         @keyframes in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ===== وضع الهاتف ===== */
-        .phone-mode .sidebar { display: none !important; }
-        .phone-mode .main-content { padding: 0.5rem !important; }
-        .phone-mode .topbar { padding: 0 0.5rem !important; }
-        .phone-mode .table-wrap { font-size: 0.65rem !important; }
-        .phone-mode .table-wrap td, .phone-mode .table-wrap th { padding: 0.3rem 0.2rem !important; }
-        .phone-mode .btn { min-height: 44px !important; font-size: 0.85rem !important; }
-        .phone-mode .pos-grid { grid-template-columns: 1fr !important; }
-        .phone-mode .status-select { font-size: 0.6rem !important; max-width: 70px !important; }
-        .phone-mode .product-grid-card { padding: 0.4rem !important; }
-        .phone-mode .product-grid-card img { width: 40px !important; height: 40px !important; }
-        .phone-mode .product-grid-card .product-name { font-size: 0.7rem !important; }
-        .phone-mode .product-grid-card .product-price { font-size: 0.75rem !important; }
-        .phone-mode .product-grid-card .add-btn { width: 22px; height: 22px; font-size: 12px; top: -6px; left: -6px; }
-        .phone-mode .bottom-nav { display: flex !important; }
-        .phone-mode .mode-toggle-label { font-size: 0.7rem !important; }
-        .phone-mode .mode-toggle-btn { padding: 0.2rem 0.5rem !important; font-size: 0.7rem !important; }
-
-        /* ===== وضع الكمبيوتر ===== */
-        .desktop-mode .sidebar { display: flex !important; }
-        .desktop-mode .bottom-nav { display: none !important; }
-        .desktop-mode .main-content { padding: 1.5rem !important; }
-
-        /* ===== تحسينات عامة ===== */
         @media print {
             body * { visibility: hidden !important; }
             #print-area, #print-area * { visibility: visible !important; }
@@ -74,7 +50,29 @@
             .row-paid, .row-unpaid, .row-cancelled { background: white !important; border-right: none !important; box-shadow: none !important; }
         }
 
-        /* ===== تظليل متوهج ===== */
+        @media (max-width: 480px) {
+            .table-wrap { font-size: 0.7rem !important; }
+            .table-wrap td, .table-wrap th { padding: 0.4rem 0.3rem !important; }
+            .pos-grid { grid-template-columns: 1fr !important; }
+            .status-select { font-size: 0.65rem !important; padding: 0.1rem 0.2rem !important; max-width: 80px !important; }
+            .product-grid-card { padding: 0.5rem !important; }
+            .product-grid-card img { width: 40px !important; height: 40px !important; }
+        }
+
+        input[type=number]::-webkit-inner-spin-button { opacity: 1; }
+
+        .toast-container { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 9999; max-width: 90%; width: 400px; }
+        .toast { background: #1e293b; color: white; padding: 12px 20px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); font-weight: 600; animation: slideUp 0.4s ease-out; text-align: center; border-right: 5px solid #0ea5e9; }
+        .toast.warning { border-right-color: #f59e0b; }
+        .toast.error { border-right-color: #ef4444; }
+        .toast.success { border-right-color: #22c55e; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .status-select { background: transparent; border: 1px solid #ccc; border-radius: 6px; padding: 2px 6px; font-weight: 700; font-size: 0.75rem; cursor: pointer; transition: 0.2s; min-width: 70px; }
+        .status-select:hover { border-color: #0ea5e9; }
+        .status-select option { font-weight: 700; }
+        .dark .status-select { background: #1e293b; color: #e2e8f0; border-color: #475569; }
+
         .row-paid { background-color: rgba(34,197,94,0.10) !important; border-right: 4px solid #22c55e !important; box-shadow: inset 0 0 30px rgba(34,197,94,0.08), 0 0 15px rgba(34,197,94,0.03) !important; }
         .row-unpaid { background-color: rgba(239,68,68,0.08) !important; border-right: 4px solid #ef4444 !important; box-shadow: inset 0 0 30px rgba(239,68,68,0.08), 0 0 15px rgba(239,68,68,0.03) !important; }
         .row-cancelled { background-color: rgba(251,146,60,0.08) !important; border-right: 4px solid #fb923c !important; box-shadow: inset 0 0 30px rgba(251,146,60,0.08), 0 0 15px rgba(251,146,60,0.03) !important; }
@@ -84,7 +82,6 @@
         .invoice-row:hover { filter: brightness(0.97); transition: 0.15s; }
         .dark .invoice-row:hover { filter: brightness(1.05); }
 
-        /* ===== تنسيق شبكة المنتجات ===== */
         .product-grid-card {
             background: white;
             border-radius: 16px;
@@ -105,63 +102,51 @@
         .dark .product-grid-card img { border-color: #475569; background: #0f172a; }
         .product-grid-card .product-name { font-weight: 700; font-size: 0.9rem; margin-top: 4px; line-height: 1.3; }
         .product-grid-card .product-price { color: #0ea5e9; font-weight: 800; font-size: 0.9rem; }
-        .product-grid-card .add-btn {
-            position: absolute; top: -8px; left: -8px; width: 28px; height: 28px; border-radius: 50%;
-            background: #0ea5e9; color: white; border: none; font-size: 16px; font-weight: 700;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 10px rgba(14,165,233,0.3); transition: 0.2s;
-        }
+        .product-grid-card .add-btn { position: absolute; top: -8px; left: -8px; width: 28px; height: 28px; border-radius: 50%; background: #0ea5e9; color: white; border: none; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(14,165,233,0.3); transition: 0.2s; }
         .product-grid-card .add-btn:hover { transform: scale(1.1); background: #0284c7; }
         .dark .product-grid-card .add-btn { background: #0284c7; }
 
-        /* ===== تحسين الماسح ===== */
-        #scanner .scanner-controls { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
-        #scanner .scanner-controls button {
-            padding: 8px 16px; border-radius: 12px; background: rgba(255,255,255,0.15);
-            color: white; border: 1px solid rgba(255,255,255,0.2); font-weight: 600;
-            transition: 0.2s; cursor: pointer; font-size: 14px;
+        /* تنسيق زر تبديل الكاميرا في الماسح */
+        .scanner-controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            padding: 10px;
+            background: rgba(0,0,0,0.7);
         }
-        #scanner .scanner-controls button:hover { background: rgba(255,255,255,0.25); }
-
-        /* ===== أزرار التبديل ===== */
-        .mode-toggle-btn {
-            display: flex; align-items: center; gap: 6px;
-            padding: 4px 12px; border-radius: 20px;
-            background: rgba(14,165,233,0.1); border: 1px solid #0ea5e9;
-            color: #0ea5e9; font-weight: 700; font-size: 0.75rem;
-            cursor: pointer; transition: 0.2s;
+        .scanner-controls button {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
-        .mode-toggle-btn:hover { background: rgba(14,165,233,0.2); }
-        .dark .mode-toggle-btn { color: #60a5fa; border-color: #60a5fa; background: rgba(96,165,250,0.1); }
-        .dark .mode-toggle-btn:hover { background: rgba(96,165,250,0.2); }
-        .mode-toggle-btn i { font-size: 14px; }
-
-        /* ===== بقية العناصر ===== */
-        .toast-container { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 9999; max-width: 90%; width: 400px; }
-        .toast { background: #1e293b; color: white; padding: 12px 20px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); font-weight: 600; animation: slideUp 0.4s ease-out; text-align: center; border-right: 5px solid #0ea5e9; }
-        .toast.warning { border-right-color: #f59e0b; }
-        .toast.error { border-right-color: #ef4444; }
-        .toast.success { border-right-color: #22c55e; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .status-select { background: transparent; border: 1px solid #ccc; border-radius: 6px; padding: 2px 6px; font-weight: 700; font-size: 0.75rem; cursor: pointer; transition: 0.2s; min-width: 70px; }
-        .status-select:hover { border-color: #0ea5e9; }
-        .status-select option { font-weight: 700; }
-        .dark .status-select { background: #1e293b; color: #e2e8f0; border-color: #475569; }
-
-        .bottom-nav { display: none; }
-        @media (max-width: 1024px) { .bottom-nav { display: flex !important; } .sidebar { display: none !important; } }
-        .phone-mode .bottom-nav { display: flex !important; }
-        .desktop-mode .bottom-nav { display: none !important; }
-        .desktop-mode .sidebar { display: flex !important; }
+        .scanner-controls button:hover {
+            background: rgba(255,255,255,0.25);
+        }
+        .scanner-controls .camera-label {
+            color: #a5f3fc;
+            font-size: 12px;
+            font-weight: 400;
+            background: rgba(0,0,0,0.4);
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
     </style>
 </head>
-<body class="bg-[#f7f8fb] dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors" id="app-body">
+<body class="bg-[#f7f8fb] dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors">
 
     <div id="toast-container" class="toast-container"></div>
 
-    <div class="flex min-h-screen" id="app-container">
-        <!-- Sidebar -->
+    <div class="flex min-h-screen">
+        <!-- Sidebar Desktop -->
         <aside id="sidebar" class="hidden lg:flex w-[270px] shrink-0 flex-col border-l border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 glass sticky top-0 h-screen">
             <div class="h-[72px] flex items-center gap-3 px-5 border-b border-slate-200 dark:border-slate-800">
                 <div class="w-10 h-10 rounded-2xl bg-sky-600 flex items-center justify-center text-white shadow-lg shadow-sky-600/20">
@@ -205,9 +190,9 @@
         </aside>
 
         <!-- Main -->
-        <div class="flex-1 min-w-0 flex flex-col main-content">
+        <div class="flex-1 min-w-0 flex flex-col">
             <!-- Topbar -->
-            <header class="h-[72px] sticky top-0 z-30 bg-white/70 dark:bg-slate-900/70 glass border-b border-slate-200 dark:border-slate-800 topbar">
+            <header class="h-[72px] sticky top-0 z-30 bg-white/70 dark:bg-slate-900/70 glass border-b border-slate-200 dark:border-slate-800">
                 <div class="h-full flex items-center gap-2 px-3 sm:px-5">
                     <button id="btn-menu" class="lg:hidden w-10 h-10 grid place-items-center rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800" aria-label="القائمة الجانبية">
                         <i class="fa-solid fa-bars"></i>
@@ -217,11 +202,6 @@
                         <input id="global-search" placeholder="بحث سريع..." class="bg-transparent outline-none w-full text-sm">
                     </div>
                     <div class="ms-auto flex items-center gap-2">
-                        <!-- زر تبديل الوضع -->
-                        <button id="toggle-mode-btn" class="mode-toggle-btn" aria-label="تبديل وضع العرض">
-                            <i class="fa-solid fa-mobile-screen-button"></i>
-                            <span class="mode-toggle-label">هاتف</span>
-                        </button>
                         <button id="btn-scan" class="h-11 px-3 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold text-sm flex items-center gap-2" aria-label="ماسح QR">
                             <i class="fa-solid fa-qrcode"></i> <span class="hidden sm:inline">ماسح QR</span>
                         </button>
@@ -232,34 +212,50 @@
                 </div>
             </header>
 
-            <main class="p-3 sm:p-6 pb-24 lg:pb-6 max-w-[1400px] w-full mx-auto" id="main-content">
+            <main class="p-3 sm:p-6 pb-24 lg:pb-6 max-w-[1400px] w-full mx-auto">
                 <!-- DASHBOARD -->
                 <section id="page-dashboard" class="page space-y-5 animate-in">
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
                         <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
-                            <div class="flex items-center justify-between"><p class="text-sm text-slate-500">إجمالي المبيعات</p><i class="fa-solid fa-sack-dollar text-emerald-500"></i></div>
+                            <div class="flex items-center justify-between">
+                                <p class="text-sm text-slate-500">إجمالي المبيعات</p>
+                                <i class="fa-solid fa-sack-dollar text-emerald-500"></i>
+                            </div>
                             <h3 id="stat-sales" class="text-2xl font-extrabold mt-3">0 دج</h3>
                             <p class="text-xs mt-1 text-emerald-600">هذا الشهر</p>
                         </div>
                         <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
-                            <div class="flex items-center justify-between"><p class="text-sm text-slate-500">الفواتير</p><i class="fa-solid fa-file-lines text-sky-500"></i></div>
+                            <div class="flex items-center justify-between">
+                                <p class="text-sm text-slate-500">الفواتير</p>
+                                <i class="fa-solid fa-file-lines text-sky-500"></i>
+                            </div>
                             <h3 id="stat-invoices" class="text-2xl font-extrabold mt-3">0</h3>
                             <p class="text-xs mt-1 text-slate-500">إجمالي الفواتير</p>
                         </div>
                         <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
-                            <div class="flex items-center justify-between"><p class="text-sm text-slate-500">العملاء</p><i class="fa-solid fa-user-group text-violet-500"></i></div>
+                            <div class="flex items-center justify-between">
+                                <p class="text-sm text-slate-500">العملاء</p>
+                                <i class="fa-solid fa-user-group text-violet-500"></i>
+                            </div>
                             <h3 id="stat-customers" class="text-2xl font-extrabold mt-3">0</h3>
                             <p class="text-xs mt-1 text-slate-500">عميل نشط</p>
                         </div>
                         <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
-                            <div class="flex items-center justify-between"><p class="text-sm text-slate-500">المخزون</p><i class="fa-solid fa-cubes text-amber-500"></i></div>
+                            <div class="flex items-center justify-between">
+                                <p class="text-sm text-slate-500">المخزون</p>
+                                <i class="fa-solid fa-cubes text-amber-500"></i>
+                            </div>
                             <h3 id="stat-stock" class="text-2xl font-extrabold mt-3">0</h3>
                             <p class="text-xs mt-1 text-amber-600">منتج منخفض</p>
                         </div>
                     </div>
+
                     <div class="grid lg:grid-cols-3 gap-5">
                         <div class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800">
-                            <div class="flex items-center justify-between mb-4"><h4 class="font-bold">المبيعات آخر 7 أيام</h4><span class="text-xs px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800">دج</span></div>
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="font-bold">المبيعات آخر 7 أيام</h4>
+                                <span class="text-xs px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800">دج</span>
+                            </div>
                             <div class="h-[240px]"><canvas id="salesChart"></canvas></div>
                         </div>
                         <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800">
@@ -267,8 +263,12 @@
                             <div id="top-products" class="space-y-3 text-sm"></div>
                         </div>
                     </div>
+
                     <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800">
-                        <div class="flex items-center justify-between mb-3"><h4 class="font-bold">آخر الفواتير</h4><button data-page="invoices" class="nav-btn text-xs text-sky-600 font-bold">عرض الكل</button></div>
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="font-bold">آخر الفواتير</h4>
+                            <button data-page="invoices" class="nav-btn text-xs text-sky-600 font-bold">عرض الكل</button>
+                        </div>
                         <div class="overflow-x-auto -mx-2">
                             <table class="w-full text-sm min-w-[640px]">
                                 <thead><tr class="text-slate-500 border-b dark:border-slate-800"><th class="text-right p-2">الرقم</th><th class="text-right p-2">العميل</th><th class="text-right p-2">التاريخ</th><th class="text-right p-2">المبلغ</th><th class="text-right p-2">الحالة</th></tr></thead>
@@ -338,14 +338,16 @@
                     </div>
                 </section>
 
-                <!-- POS -->
+                <!-- POS / INVOICE CREATE -->
                 <section id="page-pos" class="page hidden animate-in">
                     <div class="grid xl:grid-cols-3 gap-5 pos-grid">
                         <div class="xl:col-span-2 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5">
                             <div class="flex items-center justify-between mb-4">
                                 <h2 class="text-lg font-extrabold">فاتورة جديدة</h2>
                                 <div class="flex gap-2">
-                                    <button onclick="go('pos')" class="h-10 px-4 rounded-xl bg-sky-600 text-white text-sm font-bold flex items-center gap-1"><i class="fa-solid fa-plus"></i> فاتورة جديدة</button>
+                                    <button onclick="go('pos')" class="h-10 px-4 rounded-xl bg-sky-600 text-white text-sm font-bold flex items-center gap-1">
+                                        <i class="fa-solid fa-plus"></i> فاتورة جديدة
+                                    </button>
                                     <select id="inv-type" class="h-10 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm font-bold">
                                         <option>فاتورة</option><option>فاتورة شكلية</option><option>وصل تسليم</option>
                                     </select>
@@ -365,6 +367,7 @@
                                     <input id="inv-date" type="date" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
                                 </div>
                             </div>
+                            <!-- items -->
                             <div class="overflow-x-auto -mx-1 px-1 table-wrap">
                                 <table class="w-full text-sm min-w-[720px]">
                                     <thead><tr class="text-slate-500 border-b dark:border-slate-800"><th class="text-right py-2 w-[40%]">المنتج</th><th class="text-right py-2">الكمية</th><th class="text-right py-2">السعر HT</th><th class="text-right py-2">TVA%</th><th class="text-right py-2">تخفيض%</th><th class="text-right py-2">المجموع</th><th></th></tr></thead>
@@ -393,6 +396,7 @@
                                 </select>
                             </div>
                         </div>
+                        <!-- side products -->
                         <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 h-fit sticky top-[88px]">
                             <div class="flex items-center gap-2 mb-3">
                                 <div class="flex-1 flex items-center gap-2 bg-slate-100 dark:bg-slate-800 rounded-xl px-3 h-11">
@@ -413,25 +417,25 @@
                         <div class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
                             <h3 class="font-bold">معلومات المؤسسة</h3>
                             <div class="grid sm:grid-cols-2 gap-3">
-                                <div><label class="text-xs">اسم الشركة</label><input id="set-company" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
-                                <div><label class="text-xs">النشاط</label><input id="set-activity" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
-                                <div class="sm:col-span-2"><label class="text-xs">العنوان</label><input id="set-address" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
-                                <div><label class="text-xs">الهاتف</label><input id="set-phone" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
-                                <div><label class="text-xs">البريد</label><input id="set-email" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
-                                <div><label class="text-xs">NIF</label><input id="set-nif" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
-                                <div><label class="text-xs">NIS</label><input id="set-nis" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
-                                <div><label class="text-xs">RC</label><input id="set-rc" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
-                                <div><label class="text-xs">AI</label><input id="set-ai" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
-                                <div><label class="text-xs">RIB / CCP</label><input id="set-rib" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
+                                <div><label class="text-xs">اسم الشركة</label><input id="set-company" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"></div>
+                                <div><label class="text-xs">النشاط</label><input id="set-activity" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"></div>
+                                <div class="sm:col-span-2"><label class="text-xs">العنوان</label><input id="set-address" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"></div>
+                                <div><label class="text-xs">الهاتف</label><input id="set-phone" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"></div>
+                                <div><label class="text-xs">البريد</label><input id="set-email" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"></div>
+                                <div><label class="text-xs">NIF</label><input id="set-nif" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"></div>
+                                <div><label class="text-xs">NIS</label><input id="set-nis" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"></div>
+                                <div><label class="text-xs">RC</label><input id="set-rc" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"></div>
+                                <div><label class="text-xs">AI</label><input id="set-ai" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"></div>
+                                <div><label class="text-xs">RIB / CCP</label><input id="set-rib" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"></div>
                             </div>
                             <div class="grid sm:grid-cols-3 gap-3">
-                                <div><label class="text-xs">TVA افتراضية %</label><input id="set-tva" type="number" value="19" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
-                                <div><label class="text-xs">الطابع (دج)</label><input id="set-timbre" type="number" value="0" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
-                                <div><label class="text-xs">العملة</label><input id="set-currency" value="دج" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
+                                <div><label class="text-xs">TVA افتراضية %</label><input id="set-tva" type="number" value="19" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"></div>
+                                <div><label class="text-xs">الطابع (دج)</label><input id="set-timbre" type="number" value="0" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"></div>
+                                <div><label class="text-xs">العملة</label><input id="set-currency" value="دج" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"></div>
                             </div>
                             <div>
                                 <label class="text-xs">تذييل الفاتورة</label>
-                                <textarea id="set-footer" rows="2" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border" placeholder="شكرا لتعاملكم معنا - الدفع خلال 30 يوم"></textarea>
+                                <textarea id="set-footer" rows="2" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700" placeholder="شكرا لتعاملكم معنا - الدفع خلال 30 يوم"></textarea>
                             </div>
                             <button id="save-settings" class="h-11 px-5 rounded-xl bg-sky-600 text-white font-bold">حفظ الإعدادات</button>
                         </div>
@@ -467,7 +471,7 @@
     </div>
 
     <!-- Mobile Bottom Nav -->
-    <nav class="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white/90 dark:bg-slate-900/90 glass border-t border-slate-200 dark:border-slate-800 bottom-nav">
+    <nav class="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white/90 dark:bg-slate-900/90 glass border-t border-slate-200 dark:border-slate-800">
         <div class="grid grid-cols-5 h-[68px]">
             <button data-page="dashboard" class="nav-btn flex flex-col items-center justify-center gap-1 text-[11px] font-bold text-sky-600"><i class="fa-solid fa-chart-pie text-[18px]"></i>الرئيسية</button>
             <button data-page="invoices" class="nav-btn flex flex-col items-center justify-center gap-1 text-[11px]"><i class="fa-solid fa-file-invoice text-[18px]"></i>فواتير</button>
@@ -498,10 +502,14 @@
                 <button id="close-scan" class="w-9 h-9 grid place-items-center rounded-xl bg-white/10" aria-label="إغلاق الماسح"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div id="reader" class="w-full aspect-square bg-black"></div>
-            <p class="text-center text-white/70 text-xs p-3">وجّه الكاميرا نحو الرمز</p>
+            <!-- أزرار التحكم في الماسح -->
             <div class="scanner-controls">
-                <button id="switch-camera-btn" class="text-white"><i class="fa-solid fa-camera-rotate"></i> تبديل الكاميرا</button>
+                <span class="camera-label" id="camera-label">📷 كاميرا: خلفية</span>
+                <button id="toggle-camera" class="flex items-center gap-1">
+                    <i class="fa-solid fa-rotate"></i> تبديل الكاميرا
+                </button>
             </div>
+            <p class="text-center text-white/70 text-xs p-3">وجّه الكاميرا نحو الرمز</p>
         </div>
     </div>
 
@@ -517,7 +525,9 @@
         const Sound = (function() {
             let audioCtx = null;
             function getContext() {
-                if (!audioCtx) { try { audioCtx = new(window.AudioContext || window.webkitAudioContext)(); } catch(e) { return null; } }
+                if (!audioCtx) {
+                    try { audioCtx = new(window.AudioContext || window.webkitAudioContext)(); } catch(e) { return null; }
+                }
                 if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(()=>{});
                 return audioCtx;
             }
@@ -623,63 +633,6 @@
         }
 
         // ============================================================
-        //  MODE TOGGLE (هاتف / كمبيوتر)
-        // ============================================================
-        let currentMode = localStorage.getItem('appMode') || 'auto';
-        const toggleBtn = $('#toggle-mode-btn');
-        const appBody = document.getElementById('app-body');
-        const sidebar = document.getElementById('sidebar');
-        const bottomNav = document.querySelector('.bottom-nav');
-
-        function setMode(mode) {
-            appBody.classList.remove('phone-mode', 'desktop-mode');
-            if (mode === 'phone') {
-                appBody.classList.add('phone-mode');
-                toggleBtn.innerHTML = '<i class="fa-solid fa-desktop"></i> <span class="mode-toggle-label">كمبيوتر</span>';
-                localStorage.setItem('appMode', 'phone');
-                // إخفاء الشريط الجانبي وإظهار التنقل السفلي
-                if (sidebar) sidebar.style.display = 'none';
-                if (bottomNav) bottomNav.style.display = 'flex';
-            } else if (mode === 'desktop') {
-                appBody.classList.add('desktop-mode');
-                toggleBtn.innerHTML = '<i class="fa-solid fa-mobile-screen-button"></i> <span class="mode-toggle-label">هاتف</span>';
-                localStorage.setItem('appMode', 'desktop');
-                if (sidebar) sidebar.style.display = 'flex';
-                if (bottomNav) bottomNav.style.display = 'none';
-            } else { // auto
-                const isPhone = window.innerWidth < 1024;
-                if (isPhone) {
-                    appBody.classList.add('phone-mode');
-                    toggleBtn.innerHTML = '<i class="fa-solid fa-desktop"></i> <span class="mode-toggle-label">كمبيوتر</span>';
-                    if (sidebar) sidebar.style.display = 'none';
-                    if (bottomNav) bottomNav.style.display = 'flex';
-                } else {
-                    appBody.classList.add('desktop-mode');
-                    toggleBtn.innerHTML = '<i class="fa-solid fa-mobile-screen-button"></i> <span class="mode-toggle-label">هاتف</span>';
-                    if (sidebar) sidebar.style.display = 'flex';
-                    if (bottomNav) bottomNav.style.display = 'none';
-                }
-                localStorage.setItem('appMode', 'auto');
-            }
-            currentMode = mode;
-        }
-
-        toggleBtn.addEventListener('click', function() {
-            if (currentMode === 'phone') setMode('desktop');
-            else if (currentMode === 'desktop') setMode('auto');
-            else setMode('phone');
-        });
-
-        // استعادة الوضع المحفوظ
-        const savedMode = localStorage.getItem('appMode') || 'auto';
-        setMode(savedMode);
-
-        // استجابة لتغيير حجم الشاشة في الوضع التلقائي
-        window.addEventListener('resize', function() {
-            if (currentMode === 'auto') setMode('auto');
-        });
-
-        // ============================================================
         //  NAVIGATION
         // ============================================================
         $$('.nav-btn').forEach(b => b.addEventListener('click', () => go(b.dataset.page)));
@@ -703,9 +656,7 @@
             if (page === 'settings') loadSettings();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        $('#btn-menu').onclick = () => {
-            if (sidebar) sidebar.classList.toggle('hidden');
-        };
+        $('#btn-menu').onclick = () => $('#sidebar').classList.toggle('hidden');
         $('#btn-new-invoice').onclick = $('#btn-new-invoice-2').onclick = () => go('pos');
 
         // ============================================================
@@ -765,12 +716,15 @@
         }
 
         // ============================================================
-        //  PRODUCTS (مع الصور)
+        //  PRODUCTS (with images)
         // ============================================================
         function renderProducts() {
             $('#products-table').innerHTML = state.products.map(p => `
                 <tr class="border-b dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                    <td class="p-3">${p.image ? `<img src="${p.image}" class="w-12 h-12 rounded-lg object-cover border border-slate-200 dark:border-slate-700">` : `<div class="w-12 h-12 rounded-lg bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-400"><i class="fa-solid fa-image"></i></div>`}</td>
+                    <td class="p-3">
+                        ${p.image ? `<img src="${p.image}" class="w-12 h-12 rounded-lg object-cover border border-slate-200 dark:border-slate-700" alt="${p.name}">` :
+                        `<div class="w-12 h-12 rounded-lg bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-400"><i class="fa-solid fa-image"></i></div>`}
+                    </td>
                     <td class="p-3 font-bold">${p.name}</td>
                     <td class="p-3 font-mono text-xs">${p.ref}</td>
                     <td class="p-3">${money(p.buy)}</td>
@@ -808,7 +762,7 @@
             $('#modal-title').textContent = p ? 'تعديل منتج' : 'منتج جديد';
             $('#modal-body').innerHTML = `
                 <div class="grid sm:grid-cols-2 gap-3">
-                    <div class="sm:col-span-2"><label class="text-xs">اسم المنتج</label><input id="p-name" value="${p?.name||''}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
+                    <div class="sm:col-span-2"><label class="text-xs">اسم المنتج</label><input id="p-name" value="${p?.name||''}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"></div>
                     <div><label class="text-xs">المرجع / باركود</label><input id="p-ref" value="${p?.ref||''}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
                     <div><label class="text-xs">المخزون</label><input id="p-stock" type="number" value="${p?.stock||0}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
                     <div><label class="text-xs">سعر الشراء</label><input id="p-buy" type="number" value="${p?.buy||0}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
@@ -873,8 +827,12 @@
             const stock = +$('#p-stock').value || 0;
             const o = { id: id || Date.now(), name, ref, buy, price, tva, stock, image: imageData };
             updateState(s => {
-                if (id) { const idx = s.products.findIndex(p => p.id === id); if (idx > -1) s.products[idx] = o; }
-                else { s.products.unshift(o); }
+                if (id) {
+                    const idx = s.products.findIndex(p => p.id === id);
+                    if (idx > -1) s.products[idx] = o;
+                } else {
+                    s.products.unshift(o);
+                }
             });
             showModal(false);
             renderProducts();
@@ -882,6 +840,7 @@
         }
 
         function editProduct(id) { openProduct(state.products.find(p => p.id === id)); }
+
         function delProduct(id) {
             if (confirm('حذف المنتج نهائياً؟')) {
                 Sound.delete();
@@ -892,7 +851,7 @@
         }
 
         // ============================================================
-        //  CUSTOMERS
+        //  CUSTOMERS (unchanged)
         // ============================================================
         function renderCustomers() {
             $('#customers-table').innerHTML = state.customers.map(c => `<tr class="border-b dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50">
@@ -934,6 +893,7 @@
             renderCustomers();
             showToast('تم حفظ العميل', 'success');
         }
+
         function editCustomer(id) { openCustomer(state.customers.find(c => c.id === id)); }
         function delCustomer(id) {
             if (confirm('حذف العميل؟')) {
@@ -988,6 +948,7 @@
             showToast(`تم تغيير حالة الفاتورة ${invoice.number} إلى "${newStatus}"`, 'success');
             renderDashboard();
         }
+
         function delInvoice(id) {
             if (confirm('حذف الفاتورة نهائياً؟')) {
                 Sound.delete();
@@ -997,6 +958,7 @@
                 showToast('تم حذف الفاتورة', 'warning');
             }
         }
+
         function viewInvoice(id) { const inv = state.invoices.find(i => i.id === id); if (!inv) return; buildPrint(inv); window.print(); }
         function printInvoiceById(id) { const inv = state.invoices.find(i => i.id === id); if (!inv) return; buildPrint(inv); Sound.print(); window.print(); }
 
@@ -1387,71 +1349,114 @@
         document.addEventListener('click', e => { if (e.target.matches('[data-close]')) showModal(false); });
 
         // ============================================================
-        //  SCANNER (مع كاميرا خلفية وتبديل)
+        //  SCANNER (محسّن لاستخدام الكاميرا الخلفية)
         // ============================================================
-        let html5Qr;
+        let html5Qr = null;
         let currentCameraId = null;
-        let allCameras = [];
+        let availableCameras = [];
 
-        $('#btn-scan').onclick = $('#btn-scan-add').onclick = async function() {
-            try {
-                Sound.camera();
-                $('#scanner').classList.remove('hidden');
-                if (!html5Qr) html5Qr = new Html5Qrcode("reader");
-                allCameras = await Html5Qrcode.getCameras();
-                if (allCameras.length === 0) {
-                    showToast('لا توجد كاميرا', 'error');
-                    $('#scanner').classList.add('hidden');
-                    return;
-                }
-                // اختيار الكاميرا الخلفية (environment) إن وجدت
-                let rearCam = allCameras.find(c => c.label.toLowerCase().includes('back') || c.label.toLowerCase().includes('environment'));
-                if (!rearCam) {
-                    // أو آخر كاميرا (غالباً الخلفية)
-                    rearCam = allCameras[allCameras.length - 1];
-                }
-                currentCameraId = rearCam.id;
-                await startScanner(currentCameraId);
-            } catch(err) {
-                console.error(err);
-                showToast('تعذر تشغيل الكاميرا: ' + err.message, 'error');
-                $('#scanner').classList.add('hidden');
-            }
-        };
+        // دالة للحصول على الكاميرا المفضلة (خلفية إن وجدت)
+        function getPreferredCameraId(cameras) {
+            // البحث عن كاميرا خلفية (environment)
+            const backCamera = cameras.find(cam => cam.label.toLowerCase().includes('back') || cam.label.toLowerCase().includes('rear') || cam.label.toLowerCase().includes('environment'));
+            if (backCamera) return backCamera.id;
+            // إذا لم توجد، نأخذ الأولى
+            return cameras[0]?.id || null;
+        }
 
+        // دالة لبدء الماسح بكاميرا محددة
         async function startScanner(cameraId) {
             try {
-                await html5Qr.start(cameraId, { fps: 15, qrbox: 280 }, decoded => {
-                    html5Qr.stop();
-                    $('#scanner').classList.add('hidden');
-                    const prod = state.products.find(p => p.ref === decoded);
-                    if (prod) { addItemById(prod.id); go('pos'); } else { showToast('الباركود: ' + decoded, 'info'); }
-                });
+                if (html5Qr) {
+                    try { await html5Qr.stop(); } catch(e) {}
+                }
+                html5Qr = new Html5Qrcode("reader");
+                const config = { fps: 10, qrbox: 250 };
+                await html5Qr.start(cameraId, config, onScanSuccess);
+                currentCameraId = cameraId;
+                // تحديث اسم الكاميرا المعروض
+                const cam = availableCameras.find(c => c.id === cameraId);
+                const label = cam ? cam.label : 'غير معروف';
+                const isBack = label.toLowerCase().includes('back') || label.toLowerCase().includes('rear') || label.toLowerCase().includes('environment');
+                document.getElementById('camera-label').textContent = `📷 كاميرا: ${isBack ? 'خلفية' : 'أمامية'}`;
+                // حفظ اختيار الكاميرا
+                localStorage.setItem('preferred_camera', cameraId);
             } catch(err) {
-                console.error(err);
-                showToast('فشل تشغيل الكاميرا: ' + err.message, 'error');
+                console.error('خطأ في بدء الماسح:', err);
+                showToast('تعذر تشغيل الكاميرا: ' + err.message, 'error');
                 $('#scanner').classList.add('hidden');
             }
         }
 
-        $('#switch-camera-btn').onclick = async function() {
-            if (allCameras.length < 2) { showToast('لا توجد كاميرا أخرى', 'warning'); return; }
+        // دالة معالجة نتيجة المسح
+        function onScanSuccess(decodedText) {
             try {
-                await html5Qr.stop();
-                // تبديل إلى الكاميرا التالية في القائمة
-                const currentIdx = allCameras.findIndex(c => c.id === currentCameraId);
-                const nextIdx = (currentIdx + 1) % allCameras.length;
-                currentCameraId = allCameras[nextIdx].id;
-                await startScanner(currentCameraId);
-                showToast('تم التبديل إلى الكاميرا ' + (nextIdx + 1), 'info');
+                if (html5Qr) html5Qr.stop();
+            } catch(e) {}
+            $('#scanner').classList.add('hidden');
+            // البحث عن المنتج بالباركود
+            const prod = state.products.find(p => p.ref === decodedText);
+            if (prod) {
+                addItemById(prod.id);
+                go('pos');
+                showToast('تم إضافة المنتج: ' + prod.name, 'success');
+            } else {
+                showToast('الباركود: ' + decodedText + ' (غير مسجل)', 'info');
+            }
+        }
+
+        // أزرار فتح الماسح
+        $('#btn-scan').onclick = $('#btn-scan-add').onclick = async function() {
+            try {
+                Sound.camera();
+                $('#scanner').classList.remove('hidden');
+
+                // الحصول على قائمة الكاميرات المتاحة
+                const cameras = await Html5Qrcode.getCameras();
+                if (cameras.length === 0) {
+                    showToast('لا توجد كاميرا متاحة', 'error');
+                    $('#scanner').classList.add('hidden');
+                    return;
+                }
+                availableCameras = cameras;
+
+                // تحديد الكاميرا المفضلة: من localStorage أو الكاميرا الخلفية
+                let preferredId = localStorage.getItem('preferred_camera');
+                // التحقق من صحة المعرف
+                if (!preferredId || !cameras.some(c => c.id === preferredId)) {
+                    preferredId = getPreferredCameraId(cameras);
+                }
+                if (!preferredId) preferredId = cameras[0].id;
+
+                await startScanner(preferredId);
             } catch(err) {
                 console.error(err);
-                showToast('فشل تبديل الكاميرا', 'error');
+                showToast('تعذر الوصول للكاميرا: ' + err.message, 'error');
+                $('#scanner').classList.add('hidden');
             }
         };
 
+        // زر تبديل الكاميرا
+        $('#toggle-camera').onclick = async function() {
+            if (availableCameras.length < 2) {
+                showToast('لا توجد كاميرات أخرى للتبديل', 'warning');
+                return;
+            }
+            // البحث عن الكاميرا التالية في القائمة
+            const currentIndex = availableCameras.findIndex(c => c.id === currentCameraId);
+            const nextIndex = (currentIndex + 1) % availableCameras.length;
+            const nextCamera = availableCameras[nextIndex];
+            if (nextCamera) {
+                await startScanner(nextCamera.id);
+                showToast('تم التبديل إلى الكاميرا ' + (nextCamera.label || ''), 'success');
+            }
+        };
+
+        // إغلاق الماسح
         $('#close-scan').onclick = async function() {
-            try { if (html5Qr) await html5Qr.stop(); } catch(e) {}
+            try {
+                if (html5Qr) await html5Qr.stop();
+            } catch(e) {}
             $('#scanner').classList.add('hidden');
         };
 
