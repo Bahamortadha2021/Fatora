@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>فَوْتَرَة كامل - نظام الفوترة الجزائري (كاميرا خلفية للمسح)</title>
+    <title>فَوْتَرَة كامل - نظام الفوترة الجزائري (إضافة منتج من QR)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -106,7 +106,6 @@
         .product-grid-card .add-btn:hover { transform: scale(1.1); background: #0284c7; }
         .dark .product-grid-card .add-btn { background: #0284c7; }
 
-        /* تنسيق زر تبديل الكاميرا في الماسح */
         .scanner-controls {
             display: flex;
             justify-content: center;
@@ -154,7 +153,7 @@
                 </div>
                 <div>
                     <h1 class="font-extrabold text-lg leading-none">فَوْتَرَة</h1>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400">الإصدار الجزائري v3.9</p>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">الإصدار الجزائري v4.0</p>
                 </div>
             </div>
             <nav class="p-3 space-y-1.5 overflow-y-auto">
@@ -502,7 +501,6 @@
                 <button id="close-scan" class="w-9 h-9 grid place-items-center rounded-xl bg-white/10" aria-label="إغلاق الماسح"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div id="reader" class="w-full aspect-square bg-black"></div>
-            <!-- أزرار التحكم في الماسح -->
             <div class="scanner-controls">
                 <span class="camera-label" id="camera-label">📷 كاميرا: خلفية</span>
                 <button id="toggle-camera" class="flex items-center gap-1">
@@ -716,8 +714,10 @@
         }
 
         // ============================================================
-        //  PRODUCTS (with images)
+        //  PRODUCTS (with images and scan-to-add)
         // ============================================================
+        let pendingAddToInvoice = false; // لتحديد ما إذا نضيف المنتج للفاتورة بعد الحفظ
+
         function renderProducts() {
             $('#products-table').innerHTML = state.products.map(p => `
                 <tr class="border-b dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50">
@@ -758,12 +758,14 @@
 
         $('#btn-add-product').onclick = () => openProduct();
 
-        function openProduct(p = null) {
-            $('#modal-title').textContent = p ? 'تعديل منتج' : 'منتج جديد';
+        function openProduct(p = null, ref = '', addToInvoice = false) {
+            pendingAddToInvoice = addToInvoice;
+            $('#modal-title').textContent = p ? 'تعديل منتج' : (ref ? 'إضافة منتج جديد من المسح' : 'منتج جديد');
+            const refValue = p?.ref || ref || '';
             $('#modal-body').innerHTML = `
                 <div class="grid sm:grid-cols-2 gap-3">
                     <div class="sm:col-span-2"><label class="text-xs">اسم المنتج</label><input id="p-name" value="${p?.name||''}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"></div>
-                    <div><label class="text-xs">المرجع / باركود</label><input id="p-ref" value="${p?.ref||''}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
+                    <div><label class="text-xs">المرجع / باركود</label><input id="p-ref" value="${refValue}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"></div>
                     <div><label class="text-xs">المخزون</label><input id="p-stock" type="number" value="${p?.stock||0}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
                     <div><label class="text-xs">سعر الشراء</label><input id="p-buy" type="number" value="${p?.buy||0}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
                     <div><label class="text-xs">سعر البيع HT</label><input id="p-price" type="number" value="${p?.price||0}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
@@ -826,17 +828,28 @@
             const tva = +$('#p-tva').value || state.company.tva;
             const stock = +$('#p-stock').value || 0;
             const o = { id: id || Date.now(), name, ref, buy, price, tva, stock, image: imageData };
+            let isNew = false;
             updateState(s => {
                 if (id) {
                     const idx = s.products.findIndex(p => p.id === id);
                     if (idx > -1) s.products[idx] = o;
                 } else {
                     s.products.unshift(o);
+                    isNew = true;
                 }
             });
             showModal(false);
             renderProducts();
             showToast('تم حفظ المنتج', 'success');
+
+            // إذا كنا في وضع الإضافة من المسح، نضيف المنتج للفاتورة
+            if (pendingAddToInvoice && isNew) {
+                // نضيف المنتج للفاتورة باستخدام المعرف الجديد (o.id)
+                addItemById(o.id);
+                pendingAddToInvoice = false;
+                // ننتقل إلى صفحة البيع إذا لم نكن فيها
+                go('pos');
+            }
         }
 
         function editProduct(id) { openProduct(state.products.find(p => p.id === id)); }
@@ -851,7 +864,7 @@
         }
 
         // ============================================================
-        //  CUSTOMERS (unchanged)
+        //  CUSTOMERS
         // ============================================================
         function renderCustomers() {
             $('#customers-table').innerHTML = state.customers.map(c => `<tr class="border-b dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50">
@@ -1349,22 +1362,18 @@
         document.addEventListener('click', e => { if (e.target.matches('[data-close]')) showModal(false); });
 
         // ============================================================
-        //  SCANNER (محسّن لاستخدام الكاميرا الخلفية)
+        //  SCANNER (محسّن: إضافة منتج عند عدم العثور عليه)
         // ============================================================
         let html5Qr = null;
         let currentCameraId = null;
         let availableCameras = [];
 
-        // دالة للحصول على الكاميرا المفضلة (خلفية إن وجدت)
         function getPreferredCameraId(cameras) {
-            // البحث عن كاميرا خلفية (environment)
             const backCamera = cameras.find(cam => cam.label.toLowerCase().includes('back') || cam.label.toLowerCase().includes('rear') || cam.label.toLowerCase().includes('environment'));
             if (backCamera) return backCamera.id;
-            // إذا لم توجد، نأخذ الأولى
             return cameras[0]?.id || null;
         }
 
-        // دالة لبدء الماسح بكاميرا محددة
         async function startScanner(cameraId) {
             try {
                 if (html5Qr) {
@@ -1374,12 +1383,10 @@
                 const config = { fps: 10, qrbox: 250 };
                 await html5Qr.start(cameraId, config, onScanSuccess);
                 currentCameraId = cameraId;
-                // تحديث اسم الكاميرا المعروض
                 const cam = availableCameras.find(c => c.id === cameraId);
                 const label = cam ? cam.label : 'غير معروف';
                 const isBack = label.toLowerCase().includes('back') || label.toLowerCase().includes('rear') || label.toLowerCase().includes('environment');
                 document.getElementById('camera-label').textContent = `📷 كاميرا: ${isBack ? 'خلفية' : 'أمامية'}`;
-                // حفظ اختيار الكاميرا
                 localStorage.setItem('preferred_camera', cameraId);
             } catch(err) {
                 console.error('خطأ في بدء الماسح:', err);
@@ -1388,30 +1395,30 @@
             }
         }
 
-        // دالة معالجة نتيجة المسح
         function onScanSuccess(decodedText) {
-            try {
-                if (html5Qr) html5Qr.stop();
-            } catch(e) {}
+            try { if (html5Qr) html5Qr.stop(); } catch(e) {}
             $('#scanner').classList.add('hidden');
-            // البحث عن المنتج بالباركود
+
             const prod = state.products.find(p => p.ref === decodedText);
             if (prod) {
                 addItemById(prod.id);
                 go('pos');
                 showToast('تم إضافة المنتج: ' + prod.name, 'success');
             } else {
-                showToast('الباركود: ' + decodedText + ' (غير مسجل)', 'info');
+                // عرض خيار إضافة منتج جديد بالمرجع المقروء
+                if (confirm(`الباركود "${decodedText}" غير مسجل. هل تريد إضافة منتج جديد بهذا المرجع؟`)) {
+                    openProduct(null, decodedText, true); // addToInvoice = true
+                } else {
+                    showToast('الباركود: ' + decodedText + ' (غير مسجل)', 'info');
+                }
             }
         }
 
-        // أزرار فتح الماسح
         $('#btn-scan').onclick = $('#btn-scan-add').onclick = async function() {
             try {
                 Sound.camera();
                 $('#scanner').classList.remove('hidden');
 
-                // الحصول على قائمة الكاميرات المتاحة
                 const cameras = await Html5Qrcode.getCameras();
                 if (cameras.length === 0) {
                     showToast('لا توجد كاميرا متاحة', 'error');
@@ -1420,9 +1427,7 @@
                 }
                 availableCameras = cameras;
 
-                // تحديد الكاميرا المفضلة: من localStorage أو الكاميرا الخلفية
                 let preferredId = localStorage.getItem('preferred_camera');
-                // التحقق من صحة المعرف
                 if (!preferredId || !cameras.some(c => c.id === preferredId)) {
                     preferredId = getPreferredCameraId(cameras);
                 }
@@ -1436,13 +1441,11 @@
             }
         };
 
-        // زر تبديل الكاميرا
         $('#toggle-camera').onclick = async function() {
             if (availableCameras.length < 2) {
                 showToast('لا توجد كاميرات أخرى للتبديل', 'warning');
                 return;
             }
-            // البحث عن الكاميرا التالية في القائمة
             const currentIndex = availableCameras.findIndex(c => c.id === currentCameraId);
             const nextIndex = (currentIndex + 1) % availableCameras.length;
             const nextCamera = availableCameras[nextIndex];
@@ -1452,11 +1455,8 @@
             }
         };
 
-        // إغلاق الماسح
         $('#close-scan').onclick = async function() {
-            try {
-                if (html5Qr) await html5Qr.stop();
-            } catch(e) {}
+            try { if (html5Qr) await html5Qr.stop(); } catch(e) {}
             $('#scanner').classList.add('hidden');
         };
 
