@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>فَوْتَرَة كامل - نظام الفوترة الجزائري (إضافة منتج من QR)</title>
+    <title>فَوْتَرَة كامل - نظام الفوترة الجزائري (إشعارات ذكية)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,6 +48,8 @@
             #invoice-print .print-stamp-area { border: 2px dashed #000; padding: 10px 20px; border-radius: 8px; text-align: center; font-size: 12px; font-weight: 600; color: #000; min-height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
             #invoice-print .print-stamp-area img { max-height: 70px; object-fit: contain; }
             .row-paid, .row-unpaid, .row-cancelled { background: white !important; border-right: none !important; box-shadow: none !important; }
+            .notif-panel { display: none !important; }
+            .notif-bell .badge { display: none !important; }
         }
 
         @media (max-width: 480px) {
@@ -57,6 +59,7 @@
             .status-select { font-size: 0.65rem !important; padding: 0.1rem 0.2rem !important; max-width: 80px !important; }
             .product-grid-card { padding: 0.5rem !important; }
             .product-grid-card img { width: 40px !important; height: 40px !important; }
+            .notif-panel { width: 95% !important; right: 2.5% !important; left: 2.5% !important; max-height: 70vh !important; }
         }
 
         input[type=number]::-webkit-inner-spin-button { opacity: 1; }
@@ -66,6 +69,7 @@
         .toast.warning { border-right-color: #f59e0b; }
         .toast.error { border-right-color: #ef4444; }
         .toast.success { border-right-color: #22c55e; }
+        .toast.notification { border-right-color: #8b5cf6; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .status-select { background: transparent; border: 1px solid #ccc; border-radius: 6px; padding: 2px 6px; font-weight: 700; font-size: 0.75rem; cursor: pointer; transition: 0.2s; min-width: 70px; }
@@ -138,6 +142,218 @@
             padding: 4px 12px;
             border-radius: 12px;
         }
+
+        /* ===== إشعارات ===== */
+        .notif-bell {
+            position: relative;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            transition: 0.2s;
+            color: #475569;
+        }
+        .notif-bell:hover {
+            background: rgba(0,0,0,0.05);
+        }
+        .dark .notif-bell:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        .notif-bell .badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            box-shadow: 0 2px 8px rgba(239,68,68,0.4);
+            transition: 0.3s;
+        }
+        .notif-bell .badge.hidden { transform: scale(0); opacity: 0; }
+
+        .notif-panel {
+            position: absolute;
+            top: 60px;
+            left: 0;
+            width: 420px;
+            max-height: 500px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            display: none;
+            z-index: 100;
+            flex-direction: column;
+        }
+        .notif-panel.open { display: flex; }
+        .dark .notif-panel {
+            background: #1e293b;
+            border-color: #334155;
+        }
+        .notif-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .dark .notif-panel-header {
+            border-color: #334155;
+            color: #f1f5f9;
+        }
+        .notif-panel-header .actions {
+            display: flex;
+            gap: 6px;
+        }
+        .notif-panel-header .actions button {
+            background: none;
+            border: none;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #475569;
+        }
+        .dark .notif-panel-header .actions button { color: #94a3b8; }
+        .notif-panel-header .actions button:hover {
+            background: rgba(0,0,0,0.05);
+        }
+        .dark .notif-panel-header .actions button:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        .notif-list {
+            overflow-y: auto;
+            padding: 4px 0;
+            flex: 1;
+        }
+        .notif-item {
+            display: flex;
+            gap: 10px;
+            padding: 10px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            transition: 0.2s;
+            cursor: default;
+            align-items: flex-start;
+        }
+        .dark .notif-item { border-color: #1e293b; }
+        .notif-item:hover { background: #f8fafc; }
+        .dark .notif-item:hover { background: #0f172a; }
+        .notif-item.unread { background: rgba(14,165,233,0.06); }
+        .dark .notif-item.unread { background: rgba(14,165,233,0.10); }
+        .notif-item .icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 14px;
+            margin-top: 2px;
+        }
+        .notif-item .icon.low_stock { background: #fef3c7; color: #d97706; }
+        .notif-item .icon.overdue { background: #fee2e2; color: #dc2626; }
+        .notif-item .icon.new_invoice { background: #d1fae5; color: #059669; }
+        .notif-item .icon.system { background: #e0e7ff; color: #4f46e5; }
+        .dark .notif-item .icon.low_stock { background: #451a03; color: #fbbf24; }
+        .dark .notif-item .icon.overdue { background: #7f1d1d; color: #fca5a5; }
+        .dark .notif-item .icon.new_invoice { background: #064e3b; color: #6ee7b7; }
+        .dark .notif-item .icon.system { background: #1e1b4b; color: #818cf8; }
+        .notif-item .content { flex: 1; min-width: 0; }
+        /* ===== تحسين وضوح الخط ===== */
+        .notif-item .content .msg {
+            font-size: 13px;
+            line-height: 1.5;
+            font-weight: 600;
+            color: #0f172a;
+        }
+        .dark .notif-item .content .msg {
+            color: #f1f5f9;
+        }
+        .notif-item .content .time {
+            font-size: 10px;
+            font-weight: 500;
+            color: #475569;
+            margin-top: 3px;
+        }
+        .dark .notif-item .content .time {
+            color: #94a3b8;
+        }
+        .notif-item .mark-read {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 6px;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+        .notif-item .mark-read:hover { background: rgba(0,0,0,0.05); color: #0ea5e9; }
+        .dark .notif-item .mark-read:hover { background: rgba(255,255,255,0.05); }
+        .notif-empty {
+            padding: 40px 20px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+        .notif-empty i { font-size: 32px; display: block; margin-bottom: 10px; opacity: 0.5; }
+
+        .notif-filters {
+            display: flex;
+            gap: 4px;
+            padding: 6px 16px 10px;
+            border-bottom: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+        .dark .notif-filters { border-color: #334155; }
+        .notif-filters button {
+            padding: 2px 12px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid #e2e8f0;
+            background: transparent;
+            color: #64748b;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .notif-filters button.active {
+            background: #0ea5e9;
+            color: white;
+            border-color: #0ea5e9;
+        }
+        .notif-filters button:hover:not(.active) {
+            background: #f1f5f9;
+        }
+        .dark .notif-filters button {
+            border-color: #334155;
+            color: #94a3b8;
+        }
+        .dark .notif-filters button:hover:not(.active) {
+            background: #1e293b;
+        }
+        .dark .notif-filters button.active {
+            background: #0ea5e9;
+            color: white;
+            border-color: #0ea5e9;
+        }
     </style>
 </head>
 <body class="bg-[#f7f8fb] dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors">
@@ -153,7 +369,7 @@
                 </div>
                 <div>
                     <h1 class="font-extrabold text-lg leading-none">فَوْتَرَة</h1>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400">الإصدار الجزائري v4.0</p>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">الإصدار الجزائري v4.2</p>
                 </div>
             </div>
             <nav class="p-3 space-y-1.5 overflow-y-auto">
@@ -200,7 +416,30 @@
                         <i class="fa-solid fa-magnifying-glass text-slate-400"></i>
                         <input id="global-search" placeholder="بحث سريع..." class="bg-transparent outline-none w-full text-sm">
                     </div>
-                    <div class="ms-auto flex items-center gap-2">
+                    <div class="ms-auto flex items-center gap-2 relative">
+                        <!-- جرس الإشعارات -->
+                        <div class="notif-bell" id="notif-bell" onclick="toggleNotifPanel()" aria-label="الإشعارات">
+                            <i class="fa-regular fa-bell text-xl"></i>
+                            <span class="badge hidden" id="notif-badge">0</span>
+                        </div>
+                        <!-- لوحة الإشعارات -->
+                        <div class="notif-panel" id="notif-panel">
+                            <div class="notif-panel-header">
+                                <span>📢 الإشعارات</span>
+                                <div class="actions">
+                                    <button onclick="markAllNotifsRead()">تحديد الكل كمقروء</button>
+                                    <button onclick="clearAllNotifs()" style="color:#ef4444;">مسح الكل</button>
+                                </div>
+                            </div>
+                            <div class="notif-filters" id="notif-filters">
+                                <button class="active" data-filter="all" onclick="filterNotifs('all')">الكل</button>
+                                <button data-filter="low_stock" onclick="filterNotifs('low_stock')">⚠️ مخزون</button>
+                                <button data-filter="overdue" onclick="filterNotifs('overdue')">⏰ متأخرات</button>
+                                <button data-filter="new_invoice" onclick="filterNotifs('new_invoice')">📄 فواتير</button>
+                                <button data-filter="system" onclick="filterNotifs('system')">⚙️ نظام</button>
+                            </div>
+                            <div class="notif-list" id="notif-list"></div>
+                        </div>
                         <button id="btn-scan" class="h-11 px-3 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold text-sm flex items-center gap-2" aria-label="ماسح QR">
                             <i class="fa-solid fa-qrcode"></i> <span class="hidden sm:inline">ماسح QR</span>
                         </button>
@@ -461,7 +700,22 @@
                                     <span class="w-12 h-7 bg-slate-200 dark:bg-slate-700 rounded-full relative transition"><span class="dot absolute top-1 right-1 w-5 h-5 bg-white rounded-full transition"></span></span>
                                 </label>
                             </div>
-                            <button id="reset-data" class="w-full h-11 rounded-xl bg-rose-600 text-white font-bold">مسح كل البيانات</button>
+                            <!-- إعدادات الإشعارات -->
+                            <div class="pt-3 border-t dark:border-slate-800 space-y-2">
+                                <h4 class="font-bold text-sm">🔔 إعدادات الإشعارات</h4>
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div><label class="flex items-center gap-1"><input type="checkbox" id="notif-enable-low" checked> مخزون منخفض</label></div>
+                                    <div><label class="flex items-center gap-1"><input type="checkbox" id="notif-enable-overdue" checked> فواتير متأخرة</label></div>
+                                    <div><label class="flex items-center gap-1"><input type="checkbox" id="notif-enable-new" checked> فواتير جديدة</label></div>
+                                    <div><label class="flex items-center gap-1"><input type="checkbox" id="notif-enable-system" checked> إشعارات النظام</label></div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div><label>حد المخزون <input id="notif-stock-threshold" type="number" value="5" class="w-14 h-8 px-1 rounded border dark:border-slate-700 dark:bg-slate-800"></label></div>
+                                    <div><label>أيام التأخير <input id="notif-overdue-days" type="number" value="30" class="w-14 h-8 px-1 rounded border dark:border-slate-700 dark:bg-slate-800"></label></div>
+                                </div>
+                                <button id="save-notif-settings" class="w-full h-9 rounded-lg bg-sky-600 text-white text-sm font-bold">حفظ إعدادات الإشعارات</button>
+                            </div>
+                            <button id="reset-data" class="w-full h-11 rounded-xl bg-rose-600 text-white font-bold mt-2">مسح كل البيانات</button>
                         </div>
                     </div>
                 </section>
@@ -552,7 +806,8 @@
             function del() { playTone(440,0.18,'sawtooth',0.15); setTimeout(()=>playTone(330,0.18,'sawtooth',0.15),140); }
             function print() { playTone(600,0.08); setTimeout(()=>playTone(800,0.08),90); setTimeout(()=>playTone(1000,0.08),180); }
             function camera() { playTone(1000,0.04); setTimeout(()=>playTone(1200,0.04),50); }
-            return { success, error, warning, add, delete:del, print, camera };
+            function notif() { playTone(600,0.08); setTimeout(()=>playTone(800,0.08),100); setTimeout(()=>playTone(1000,0.08),200); }
+            return { success, error, warning, add, delete:del, print, camera, notif };
         })();
 
         // ============================================================
@@ -566,7 +821,18 @@
             products: [],
             customers: [],
             invoices: [],
-            counters: { inv: 2025001, prod: 1, cust: 1 }
+            counters: { inv: 2025001, prod: 1, cust: 1 },
+            notifications: {
+                items: [],
+                settings: {
+                    lowStockThreshold: 5,
+                    overdueDays: 30,
+                    enableLowStock: true,
+                    enableOverdue: true,
+                    enableNewInvoice: true,
+                    enableSystem: true
+                }
+            }
         };
         if (state.products.length === 0) {
             state.products = [
@@ -578,6 +844,14 @@
                 { id: 1, name: 'عميل نقدي', phone: '', nif: '', nis: '', rc: '', ai: '', address: '' },
                 { id: 2, name: 'شركة الأمل SARL', phone: '023 45 67 89', nif: '123456789012345', nis: '987654321', rc: '00/00-1234567', ai: '1600123', address: 'الجزائر العاصمة' },
             ];
+            saveState();
+        }
+        if (!state.notifications) {
+            state.notifications = { items: [], settings: { lowStockThreshold: 5, overdueDays: 30, enableLowStock: true, enableOverdue: true, enableNewInvoice: true, enableSystem: true } };
+            saveState();
+        }
+        if (!state.notifications.settings) {
+            state.notifications.settings = { lowStockThreshold: 5, overdueDays: 30, enableLowStock: true, enableOverdue: true, enableNewInvoice: true, enableSystem: true };
             saveState();
         }
 
@@ -613,6 +887,8 @@
                 else if (id === 'page-pos') calcTotals();
             }
             checkLowStock();
+            checkOverdueInvoices();
+            updateNotifBadge();
         }
 
         function money(n) { n = Number(n||0); return n.toLocaleString('fr-DZ', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' ' + state.company.currency; }
@@ -622,12 +898,199 @@
             if (type === 'success') Sound.success();
             else if (type === 'error') Sound.error();
             else if (type === 'warning') Sound.warning();
+            else if (type === 'notification') Sound.notif();
             const container = $('#toast-container');
             const div = document.createElement('div');
             div.className = `toast ${type}`;
             div.textContent = msg;
             container.appendChild(div);
             setTimeout(() => { div.style.opacity = '0'; div.style.transition = '0.3s'; setTimeout(() => div.remove(), 300); }, duration);
+        }
+
+        // ============================================================
+        //  NOTIFICATIONS SYSTEM
+        // ============================================================
+        function addNotification(type, message, data = null) {
+            const settings = state.notifications.settings;
+            if (type === 'low_stock' && !settings.enableLowStock) return;
+            if (type === 'overdue' && !settings.enableOverdue) return;
+            if (type === 'new_invoice' && !settings.enableNewInvoice) return;
+            if (type === 'system' && !settings.enableSystem) return;
+
+            const existing = state.notifications.items.find(n => n.type === type && n.message === message && n.read === false);
+            if (existing) {
+                existing.date = new Date().toISOString();
+                saveState();
+                updateNotifBadge();
+                return;
+            }
+
+            const notif = {
+                id: uid(),
+                type: type,
+                message: message,
+                date: new Date().toISOString(),
+                read: false,
+                data: data || null
+            };
+            state.notifications.items.unshift(notif);
+            if (state.notifications.items.length > 100) {
+                state.notifications.items = state.notifications.items.slice(0, 100);
+            }
+            saveState();
+            updateNotifBadge();
+            showToast('🔔 ' + message, 'notification', 3000);
+            return notif;
+        }
+
+        function getUnreadCount() {
+            return state.notifications.items.filter(n => !n.read).length;
+        }
+
+        function updateNotifBadge() {
+            const badge = $('#notif-badge');
+            const count = getUnreadCount();
+            if (count > 0) {
+                badge.textContent = count > 99 ? '99+' : count;
+                badge.classList.remove('hidden');
+                setTimeout(() => { badge.style.animation = 'in 0.3s ease-out'; }, 10);
+            } else {
+                badge.classList.add('hidden');
+            }
+            if ($('#notif-panel').classList.contains('open')) {
+                renderNotifList();
+            }
+        }
+
+        function toggleNotifPanel() {
+            const panel = $('#notif-panel');
+            panel.classList.toggle('open');
+            if (panel.classList.contains('open')) {
+                renderNotifList();
+            }
+        }
+
+        function renderNotifList(filter = 'all') {
+            const list = $('#notif-list');
+            let items = state.notifications.items;
+            if (filter !== 'all') {
+                items = items.filter(n => n.type === filter);
+            }
+            if (items.length === 0) {
+                list.innerHTML = `
+                    <div class="notif-empty">
+                        <i class="fa-regular fa-bell-slash"></i>
+                        لا توجد إشعارات
+                    </div>
+                `;
+                return;
+            }
+            list.innerHTML = items.map(n => `
+                <div class="notif-item ${n.read ? '' : 'unread'}" data-id="${n.id}">
+                    <div class="icon ${n.type}">
+                        ${n.type === 'low_stock' ? '⚠️' :
+                          n.type === 'overdue' ? '⏰' :
+                          n.type === 'new_invoice' ? '📄' : '⚙️'}
+                    </div>
+                    <div class="content">
+                        <div class="msg">${n.message}</div>
+                        <div class="time">${timeAgo(n.date)}</div>
+                    </div>
+                    ${!n.read ? `<button class="mark-read" onclick="markNotifRead('${n.id}')" aria-label="تحديد كمقروء"><i class="fa-regular fa-circle-check"></i></button>` :
+                              `<button class="mark-read" onclick="deleteNotif('${n.id}')" aria-label="حذف" style="color:#94a3b8;"><i class="fa-regular fa-trash-can"></i></button>`}
+                </div>
+            `).join('');
+        }
+
+        function timeAgo(dateStr) {
+            const diff = Date.now() - new Date(dateStr).getTime();
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            if (minutes < 1) return 'الآن';
+            if (minutes < 60) return minutes + ' دقيقة' + (minutes > 1 ? '' : '');
+            if (hours < 24) return hours + ' ساعة' + (hours > 1 ? '' : '');
+            return days + ' يوم' + (days > 1 ? '' : '');
+        }
+
+        function markNotifRead(id) {
+            const notif = state.notifications.items.find(n => n.id === id);
+            if (notif) {
+                notif.read = true;
+                saveState();
+                renderNotifList(document.querySelector('.notif-filters .active')?.dataset?.filter || 'all');
+                updateNotifBadge();
+            }
+        }
+
+        function markAllNotifsRead() {
+            state.notifications.items.forEach(n => n.read = true);
+            saveState();
+            renderNotifList(document.querySelector('.notif-filters .active')?.dataset?.filter || 'all');
+            updateNotifBadge();
+            showToast('تم تحديد جميع الإشعارات كمقروءة', 'success');
+        }
+
+        function clearAllNotifs() {
+            if (state.notifications.items.length === 0) return;
+            if (confirm('هل تريد مسح جميع الإشعارات نهائياً؟')) {
+                state.notifications.items = [];
+                saveState();
+                renderNotifList('all');
+                updateNotifBadge();
+                showToast('تم مسح جميع الإشعارات', 'success');
+            }
+        }
+
+        function deleteNotif(id) {
+            state.notifications.items = state.notifications.items.filter(n => n.id !== id);
+            saveState();
+            renderNotifList(document.querySelector('.notif-filters .active')?.dataset?.filter || 'all');
+            updateNotifBadge();
+        }
+
+        function filterNotifs(type) {
+            document.querySelectorAll('.notif-filters button').forEach(b => b.classList.remove('active'));
+            const btn = document.querySelector(`.notif-filters button[data-filter="${type}"]`);
+            if (btn) btn.classList.add('active');
+            renderNotifList(type);
+        }
+
+        function checkLowStock() {
+            const threshold = state.notifications.settings.lowStockThreshold || 5;
+            const lowItems = state.products.filter(p => p.stock <= threshold && p.stock > 0);
+            const outItems = state.products.filter(p => p.stock === 0);
+            if (lowItems.length > 0) {
+                const names = lowItems.map(p => p.name).join('، ');
+                addNotification('low_stock', `⚠️ مخزون منخفض: ${names} (أقل من ${threshold})`, { products: lowItems });
+            }
+            if (outItems.length > 0) {
+                const names = outItems.map(p => p.name).join('، ');
+                addNotification('low_stock', `🚫 نفد المخزون: ${names}`, { products: outItems });
+            }
+        }
+
+        function checkOverdueInvoices() {
+            const days = state.notifications.settings.overdueDays || 30;
+            const now = new Date();
+            const overdue = state.invoices.filter(inv => {
+                if (inv.status !== 'غير مدفوعة') return false;
+                const invDate = new Date(inv.date);
+                const diff = Math.floor((now - invDate) / (1000 * 60 * 60 * 24));
+                return diff >= days;
+            });
+            if (overdue.length > 0) {
+                const names = overdue.map(i => i.number + ' (' + i.customer.name + ')').join('، ');
+                addNotification('overdue', `⏰ فواتير متأخرة أكثر من ${days} يوم: ${names}`, { invoices: overdue });
+            }
+        }
+
+        function notifyNewInvoice(invoice) {
+            addNotification('new_invoice', `📄 فاتورة جديدة ${invoice.number} - ${invoice.customer.name} بقيمة ${money(invoice.totals.ttc)}`, { invoice: invoice });
+        }
+
+        function notifySystem(message) {
+            addNotification('system', message);
         }
 
         // ============================================================
@@ -656,18 +1119,6 @@
         }
         $('#btn-menu').onclick = () => $('#sidebar').classList.toggle('hidden');
         $('#btn-new-invoice').onclick = $('#btn-new-invoice-2').onclick = () => go('pos');
-
-        // ============================================================
-        //  LOW STOCK
-        // ============================================================
-        function checkLowStock() {
-            const low = state.products.filter(p => p.stock < 5 && p.stock > 0);
-            const out = state.products.filter(p => p.stock === 0);
-            let msg = '';
-            if (out.length) msg += `🚫 نفد المخزون: ${out.map(p=>p.name).join(', ')}. `;
-            if (low.length) msg += `⚠️ مخزون منخفض: ${low.map(p=>p.name).join(', ')}. `;
-            if (msg) showToast(msg, 'warning', 5000);
-        }
 
         // ============================================================
         //  DASHBOARD
@@ -714,9 +1165,9 @@
         }
 
         // ============================================================
-        //  PRODUCTS (with images and scan-to-add)
+        //  PRODUCTS
         // ============================================================
-        let pendingAddToInvoice = false; // لتحديد ما إذا نضيف المنتج للفاتورة بعد الحفظ
+        let pendingAddToInvoice = false;
 
         function renderProducts() {
             $('#products-table').innerHTML = state.products.map(p => `
@@ -842,14 +1293,12 @@
             renderProducts();
             showToast('تم حفظ المنتج', 'success');
 
-            // إذا كنا في وضع الإضافة من المسح، نضيف المنتج للفاتورة
             if (pendingAddToInvoice && isNew) {
-                // نضيف المنتج للفاتورة باستخدام المعرف الجديد (o.id)
                 addItemById(o.id);
                 pendingAddToInvoice = false;
-                // ننتقل إلى صفحة البيع إذا لم نكن فيها
                 go('pos');
             }
+            checkLowStock();
         }
 
         function editProduct(id) { openProduct(state.products.find(p => p.id === id)); }
@@ -860,6 +1309,7 @@
                 updateState(s => { s.products = s.products.filter(p => p.id !== id); });
                 renderProducts();
                 showToast('تم حذف المنتج', 'warning');
+                checkLowStock();
             }
         }
 
@@ -960,6 +1410,7 @@
             updateState(s => { const inv = s.invoices.find(i => i.id === id); if (inv) inv.status = newStatus; });
             showToast(`تم تغيير حالة الفاتورة ${invoice.number} إلى "${newStatus}"`, 'success');
             renderDashboard();
+            checkOverdueInvoices();
         }
 
         function delInvoice(id) {
@@ -969,6 +1420,7 @@
                 renderInvoices();
                 renderDashboard();
                 showToast('تم حذف الفاتورة', 'warning');
+                checkOverdueInvoices();
             }
         }
 
@@ -1131,6 +1583,7 @@
                 });
                 localStorage.removeItem('invoice_draft');
                 showToast('تم حفظ الفاتورة ' + inv.number, 'success');
+                notifyNewInvoice(inv);
                 renderInvoices();
                 renderDashboard();
                 go('invoices');
@@ -1291,6 +1744,14 @@
             $('#logo-preview').src = c.logo || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>';
             $('#stamp-preview').src = c.stamp || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>';
             $('#toggle-dark').checked = document.documentElement.classList.contains('dark');
+
+            const s = state.notifications.settings;
+            document.getElementById('notif-stock-threshold').value = s.lowStockThreshold || 5;
+            document.getElementById('notif-overdue-days').value = s.overdueDays || 30;
+            document.getElementById('notif-enable-low').checked = s.enableLowStock !== false;
+            document.getElementById('notif-enable-overdue').checked = s.enableOverdue !== false;
+            document.getElementById('notif-enable-new').checked = s.enableNewInvoice !== false;
+            document.getElementById('notif-enable-system').checked = s.enableSystem !== false;
         }
 
         $('#save-settings').onclick = () => {
@@ -1302,6 +1763,23 @@
                     currency: $('#set-currency').value, footer: $('#set-footer').value };
             });
             showToast('تم حفظ الإعدادات', 'success');
+            notifySystem('تم تحديث إعدادات المؤسسة');
+        };
+
+        $('#save-notif-settings').onclick = () => {
+            const threshold = +document.getElementById('notif-stock-threshold').value || 5;
+            const days = +document.getElementById('notif-overdue-days').value || 30;
+            updateState(s => {
+                s.notifications.settings.lowStockThreshold = threshold;
+                s.notifications.settings.overdueDays = days;
+                s.notifications.settings.enableLowStock = document.getElementById('notif-enable-low').checked;
+                s.notifications.settings.enableOverdue = document.getElementById('notif-enable-overdue').checked;
+                s.notifications.settings.enableNewInvoice = document.getElementById('notif-enable-new').checked;
+                s.notifications.settings.enableSystem = document.getElementById('notif-enable-system').checked;
+            });
+            showToast('تم حفظ إعدادات الإشعارات', 'success');
+            checkLowStock();
+            checkOverdueInvoices();
         };
 
         $('#logo-input').onchange = function(e) {
@@ -1337,6 +1815,7 @@
             a.download = 'fawtara-backup.json';
             a.click();
             showToast('تم تصدير البيانات', 'success');
+            notifySystem('✅ تم تصدير نسخة احتياطية للبيانات');
         };
         $('#import-file').onchange = function(e) {
             const f = e.target.files[0]; if (!f) return;
@@ -1348,6 +1827,7 @@
                     saveState();
                     localStorage.removeItem('invoice_draft');
                     showToast('تم استيراد البيانات بنجاح، سيتم تحديث الصفحة', 'success');
+                    notifySystem('✅ تم استيراد بيانات من نسخة احتياطية');
                     setTimeout(() => location.reload(), 1000);
                 } catch(err) { showToast('ملف غير صالح', 'error'); }
             };
@@ -1362,7 +1842,7 @@
         document.addEventListener('click', e => { if (e.target.matches('[data-close]')) showModal(false); });
 
         // ============================================================
-        //  SCANNER (محسّن: إضافة منتج عند عدم العثور عليه)
+        //  SCANNER
         // ============================================================
         let html5Qr = null;
         let currentCameraId = null;
@@ -1405,9 +1885,8 @@
                 go('pos');
                 showToast('تم إضافة المنتج: ' + prod.name, 'success');
             } else {
-                // عرض خيار إضافة منتج جديد بالمرجع المقروء
                 if (confirm(`الباركود "${decodedText}" غير مسجل. هل تريد إضافة منتج جديد بهذا المرجع؟`)) {
-                    openProduct(null, decodedText, true); // addToInvoice = true
+                    openProduct(null, decodedText, true);
                 } else {
                     showToast('الباركود: ' + decodedText + ' (غير مسجل)', 'info');
                 }
@@ -1471,9 +1950,13 @@
         });
 
         // ============================================================
-        //  AUTO BACKUP
+        //  AUTO BACKUP + PERIODIC NOTIFICATION CHECKS
         // ============================================================
-        setInterval(() => { try { localStorage.setItem('fawtara_auto_backup_1', JSON.stringify(state)); } catch(e) {} }, 30000);
+        setInterval(() => {
+            try { localStorage.setItem('fawtara_auto_backup_1', JSON.stringify(state)); } catch(e) {}
+            checkLowStock();
+            checkOverdueInvoices();
+        }, 300000);
 
         // ============================================================
         //  INIT
@@ -1485,6 +1968,16 @@
             renderInvoices();
             loadSettings();
             checkLowStock();
+            checkOverdueInvoices();
+            updateNotifBadge();
+
+            document.addEventListener('click', function(e) {
+                const panel = $('#notif-panel');
+                const bell = $('#notif-bell');
+                if (panel.classList.contains('open') && !panel.contains(e.target) && !bell.contains(e.target)) {
+                    panel.classList.remove('open');
+                }
+            });
         }
         init();
         go('dashboard');
