@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>فَوْتَرَة كامل - نظام الفوترة الجزائري (أسماء منتجات واضحة)</title>
+    <title>فَوْتَرَة كامل - نظام الفوترة الجزائري (تعديل الفواتير)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,6 +50,7 @@
             .row-paid, .row-unpaid, .row-cancelled { background: white !important; border-right: none !important; box-shadow: none !important; }
             .notif-panel { display: none !important; }
             .notif-bell .badge { display: none !important; }
+            .edit-badge { display: none !important; }
         }
 
         @media (max-width: 480px) {
@@ -101,36 +102,17 @@
             align-items: center;
             gap: 4px;
         }
-        .dark .product-grid-card {
-            background: #1e293b;
-            border-color: #334155;
-        }
-        .product-grid-card:hover {
-            transform: translateY(-4px);
-            border-color: #0ea5e9;
-            box-shadow: 0 8px 25px rgba(14,165,233,0.15);
-        }
-        .product-grid-card img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-            background: white;
-        }
-        .dark .product-grid-card img {
-            border-color: #475569;
-            background: #0f172a;
-        }
-        /* اسم المنتج - باللون الأسود الواضح في الوضع الفاتح */
+        .dark .product-grid-card { background: #1e293b; border-color: #334155; }
+        .product-grid-card:hover { transform: translateY(-4px); border-color: #0ea5e9; box-shadow: 0 8px 25px rgba(14,165,233,0.15); }
+        .product-grid-card img { width: 60px; height: 60px; object-fit: cover; border-radius: 10px; border: 1px solid #e2e8f0; background: white; }
+        .dark .product-grid-card img { border-color: #475569; background: #0f172a; }
         .product-grid-card .product-name {
             font-weight: 800;
             font-size: 0.95rem;
             margin-top: 4px;
             line-height: 1.3;
-            color: #000000; /* أسود صريح وواضح */
+            color: #000000;
         }
-        /* اسم المنتج في الوضع الداكن - أبيض فاتح للوضوح على الخلفية الداكنة */
         .dark .product-grid-card .product-name {
             color: #f1f5f9;
         }
@@ -157,13 +139,8 @@
             box-shadow: 0 4px 10px rgba(14,165,233,0.3);
             transition: 0.2s;
         }
-        .product-grid-card .add-btn:hover {
-            transform: scale(1.1);
-            background: #0284c7;
-        }
-        .dark .product-grid-card .add-btn {
-            background: #0284c7;
-        }
+        .product-grid-card .add-btn:hover { transform: scale(1.1); background: #0284c7; }
+        .dark .product-grid-card .add-btn { background: #0284c7; }
 
         .scanner-controls {
             display: flex;
@@ -186,9 +163,7 @@
             align-items: center;
             gap: 6px;
         }
-        .scanner-controls button:hover {
-            background: rgba(255,255,255,0.25);
-        }
+        .scanner-controls button:hover { background: rgba(255,255,255,0.25); }
         .scanner-controls .camera-label {
             color: #a5f3fc;
             font-size: 12px;
@@ -211,12 +186,8 @@
             transition: 0.2s;
             color: #475569;
         }
-        .notif-bell:hover {
-            background: rgba(0,0,0,0.05);
-        }
-        .dark .notif-bell:hover {
-            background: rgba(255,255,255,0.05);
-        }
+        .notif-bell:hover { background: rgba(0,0,0,0.05); }
+        .dark .notif-bell:hover { background: rgba(255,255,255,0.05); }
         .notif-bell .badge {
             position: absolute;
             top: 2px;
@@ -253,10 +224,7 @@
             flex-direction: column;
         }
         .notif-panel.open { display: flex; }
-        .dark .notif-panel {
-            background: #1e293b;
-            border-color: #334155;
-        }
+        .dark .notif-panel { background: #1e293b; border-color: #334155; }
         .notif-panel-header {
             display: flex;
             justify-content: space-between;
@@ -266,10 +234,7 @@
             font-weight: 700;
             color: #0f172a;
         }
-        .dark .notif-panel-header {
-            border-color: #334155;
-            color: #f1f5f9;
-        }
+        .dark .notif-panel-header { border-color: #334155; color: #f1f5f9; }
         .notif-panel-header .actions {
             display: flex;
             gap: 6px;
@@ -286,17 +251,9 @@
             color: #475569;
         }
         .dark .notif-panel-header .actions button { color: #94a3b8; }
-        .notif-panel-header .actions button:hover {
-            background: rgba(0,0,0,0.05);
-        }
-        .dark .notif-panel-header .actions button:hover {
-            background: rgba(255,255,255,0.05);
-        }
-        .notif-list {
-            overflow-y: auto;
-            padding: 4px 0;
-            flex: 1;
-        }
+        .notif-panel-header .actions button:hover { background: rgba(0,0,0,0.05); }
+        .dark .notif-panel-header .actions button:hover { background: rgba(255,255,255,0.05); }
+        .notif-list { overflow-y: auto; padding: 4px 0; flex: 1; }
         .notif-item {
             display: flex;
             gap: 10px;
@@ -337,18 +294,14 @@
             font-weight: 600;
             color: #0f172a;
         }
-        .dark .notif-item .content .msg {
-            color: #f1f5f9;
-        }
+        .dark .notif-item .content .msg { color: #f1f5f9; }
         .notif-item .content .time {
             font-size: 10px;
             font-weight: 500;
             color: #475569;
             margin-top: 3px;
         }
-        .dark .notif-item .content .time {
-            color: #94a3b8;
-        }
+        .dark .notif-item .content .time { color: #94a3b8; }
         .notif-item .mark-read {
             background: none;
             border: none;
@@ -393,20 +346,31 @@
             color: white;
             border-color: #0ea5e9;
         }
-        .notif-filters button:hover:not(.active) {
-            background: #f1f5f9;
-        }
+        .notif-filters button:hover:not(.active) { background: #f1f5f9; }
         .dark .notif-filters button {
             border-color: #334155;
             color: #94a3b8;
         }
-        .dark .notif-filters button:hover:not(.active) {
-            background: #1e293b;
-        }
+        .dark .notif-filters button:hover:not(.active) { background: #1e293b; }
         .dark .notif-filters button.active {
             background: #0ea5e9;
             color: white;
             border-color: #0ea5e9;
+        }
+
+        /* زر تعديل الفاتورة */
+        .edit-badge {
+            display: inline-block;
+            background: #f59e0b;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-right: 8px;
+        }
+        .dark .edit-badge {
+            background: #d97706;
         }
     </style>
 </head>
@@ -423,7 +387,7 @@
                 </div>
                 <div>
                     <h1 class="font-extrabold text-lg leading-none">فَوْتَرَة</h1>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400">الإصدار الجزائري v4.3</p>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">الإصدار الجزائري v4.4</p>
                 </div>
             </div>
             <nav class="p-3 space-y-1.5 overflow-y-auto">
@@ -584,7 +548,7 @@
                     </div>
                     <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden">
                         <div class="overflow-x-auto table-wrap">
-                            <table class="w-full text-sm min-w-[900px]">
+                            <table class="w-full text-sm min-w-[950px]">
                                 <thead class="bg-slate-50 dark:bg-slate-800/50"><tr class="text-right text-slate-500">
                                     <th class="p-3">رقم الفاتورة</th><th class="p-3">العميل</th><th class="p-3">التاريخ</th><th class="p-3">HT</th><th class="p-3">TVA</th><th class="p-3">المجموع الكلي</th><th class="p-3">الحالة</th><th class="p-3">إجراءات</th>
                                 </tr></thead>
@@ -628,13 +592,17 @@
                     </div>
                 </section>
 
-                <!-- POS / INVOICE CREATE -->
+                <!-- POS / INVOICE CREATE + EDIT -->
                 <section id="page-pos" class="page hidden animate-in">
                     <div class="grid xl:grid-cols-3 gap-5 pos-grid">
                         <div class="xl:col-span-2 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5">
                             <div class="flex items-center justify-between mb-4">
-                                <h2 class="text-lg font-extrabold">فاتورة جديدة</h2>
+                                <h2 class="text-lg font-extrabold flex items-center gap-2">
+                                    <span id="pos-title">فاتورة جديدة</span>
+                                    <span class="edit-badge hidden" id="edit-badge">✏️ تعديل</span>
+                                </h2>
                                 <div class="flex gap-2">
+                                    <button id="btn-cancel-edit" class="h-10 px-4 rounded-xl bg-rose-600 text-white text-sm font-bold hidden">إلغاء التعديل</button>
                                     <button onclick="go('pos')" class="h-10 px-4 rounded-xl bg-sky-600 text-white text-sm font-bold flex items-center gap-1">
                                         <i class="fa-solid fa-plus"></i> فاتورة جديدة
                                     </button>
@@ -1164,12 +1132,85 @@
             if (page === 'products') renderProducts();
             if (page === 'customers') renderCustomers();
             if (page === 'invoices') renderInvoices();
-            if (page === 'pos') initInvoice();
+            if (page === 'pos') {
+                // إذا لم نكن في وضع التعديل، نبدأ فاتورة جديدة
+                if (!editingInvoiceId) {
+                    initInvoice();
+                }
+            }
             if (page === 'settings') loadSettings();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         $('#btn-menu').onclick = () => $('#sidebar').classList.toggle('hidden');
-        $('#btn-new-invoice').onclick = $('#btn-new-invoice-2').onclick = () => go('pos');
+        $('#btn-new-invoice').onclick = $('#btn-new-invoice-2').onclick = () => {
+            // إلغاء أي تعديل معلق وفتح فاتورة جديدة
+            cancelEdit();
+            go('pos');
+        };
+
+        // ============================================================
+        //  EDIT INVOICE FUNCTIONALITY
+        // ============================================================
+        let editingInvoiceId = null;
+        let originalInvoiceData = null; // لحساب فروقات المخزون
+
+        // دالة لبدء تعديل فاتورة
+        function editInvoice(id) {
+            const inv = state.invoices.find(i => i.id === id);
+            if (!inv) {
+                showToast('الفاتورة غير موجودة', 'error');
+                return;
+            }
+            // نسخ البيانات الأصلية لحساب الفروقات لاحقاً
+            originalInvoiceData = JSON.parse(JSON.stringify(inv));
+            editingInvoiceId = id;
+
+            // الانتقال إلى صفحة POS
+            go('pos');
+
+            // تعبئة النموذج ببيانات الفاتورة
+            setTimeout(() => {
+                initInvoice(inv);
+            }, 100);
+        }
+
+        // دالة إلغاء التعديل
+        function cancelEdit() {
+            editingInvoiceId = null;
+            originalInvoiceData = null;
+            $('#edit-badge').classList.add('hidden');
+            $('#btn-cancel-edit').classList.add('hidden');
+            $('#pos-title').textContent = 'فاتورة جديدة';
+            // إزالة أي مسودة متعلقة بالتعديل
+            localStorage.removeItem('invoice_draft');
+            // إعادة تعيين رقم الفاتورة إلى العداد الحالي
+            if (state.counters.inv) {
+                $('#inv-number').value = 'FA-' + state.counters.inv;
+            }
+            // تفريغ الجدول وإضافة سطر فارغ
+            $('#inv-items').innerHTML = '';
+            addItemRow();
+            calcTotals();
+            // تحديث قائمة العملاء
+            renderCustomers();
+        }
+
+        // دالة لحساب فروقات المخزون بين البيانات الأصلية والمعدلة
+        function calculateStockDifferences(originalItems, newItems) {
+            const diffs = {};
+            // جمع الكميات الأصلية
+            originalItems.forEach(it => {
+                const key = it.productId;
+                diffs[key] = (diffs[key] || 0) + it.qty;
+            });
+            // طرح الكميات الجديدة (لنحصل على الفرق: سالب يعني تمت إضافة، موجب يعني تم حذف)
+            newItems.forEach(it => {
+                const key = it.productId;
+                diffs[key] = (diffs[key] || 0) - it.qty;
+            });
+            // النتيجة: diffs[productId] = الكمية التي يجب إضافتها (إذا كانت سالبة نخصم، إذا كانت موجبة نضيف)
+            return diffs;
+        }
 
         // ============================================================
         //  DASHBOARD
@@ -1419,7 +1460,7 @@
         }
 
         // ============================================================
-        //  INVOICES LIST
+        //  INVOICES LIST + EDIT BUTTON
         // ============================================================
         function renderInvoices() {
             const f = $('#filter-status').value;
@@ -1443,7 +1484,7 @@
                     </td>
                     <td class="p-3">
                         <div class="flex gap-1.5">
-                            <button class="w-8 h-8 grid place-items-center rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700" onclick="viewInvoice('${i.id}')" aria-label="عرض"><i class="fa-solid fa-eye text-xs"></i></button>
+                            <button class="w-8 h-8 grid place-items-center rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700" onclick="editInvoice('${i.id}')" aria-label="تعديل"><i class="fa-solid fa-pen text-xs"></i></button>
                             <button class="w-8 h-8 grid place-items-center rounded-lg hover:bg-sky-100 text-sky-700" onclick="printInvoiceById('${i.id}')" aria-label="طباعة"><i class="fa-solid fa-print text-xs"></i></button>
                             <button class="w-8 h-8 grid place-items-center rounded-lg hover:bg-rose-100 text-rose-600" onclick="delInvoice('${i.id}')" aria-label="حذف"><i class="fa-solid fa-trash text-xs"></i></button>
                         </div>
@@ -1466,23 +1507,119 @@
 
         function delInvoice(id) {
             if (confirm('حذف الفاتورة نهائياً؟')) {
+                // يجب أيضاً إعادة المخزون إذا لم تكن ملغاة
+                const inv = state.invoices.find(i => i.id === id);
+                if (inv && inv.status !== 'ملغاة') {
+                    // إعادة المخزون
+                    inv.items.forEach(it => {
+                        const p = state.products.find(x => x.id === it.productId);
+                        if (p) p.stock += it.qty;
+                    });
+                }
                 Sound.delete();
                 updateState(s => { s.invoices = s.invoices.filter(i => i.id !== id); });
                 renderInvoices();
                 renderDashboard();
                 showToast('تم حذف الفاتورة', 'warning');
                 checkOverdueInvoices();
+                checkLowStock();
             }
         }
 
-        function viewInvoice(id) { const inv = state.invoices.find(i => i.id === id); if (!inv) return; buildPrint(inv); window.print(); }
-        function printInvoiceById(id) { const inv = state.invoices.find(i => i.id === id); if (!inv) return; buildPrint(inv); Sound.print(); window.print(); }
+        function printInvoiceById(id) {
+            const inv = state.invoices.find(i => i.id === id);
+            if (!inv) return;
+            buildPrint(inv);
+            Sound.print();
+            window.print();
+        }
 
         // ============================================================
-        //  POS / CREATE INVOICE
+        //  POS / CREATE INVOICE (مع دعم التعديل)
         // ============================================================
-        function initInvoice(editId = null) {
-            go('pos');
+        function initInvoice(editData = null) {
+            // إذا كان هناك editData، فهذا يعني أننا في وضع التعديل
+            if (editData) {
+                // تعبئة النموذج ببيانات الفاتورة
+                $('#pos-title').textContent = 'تعديل الفاتورة';
+                $('#edit-badge').classList.remove('hidden');
+                $('#btn-cancel-edit').classList.remove('hidden');
+                // تعيين رقم الفاتورة ونوعها
+                $('#inv-number').value = editData.number;
+                $('#inv-type').value = editData.type || 'فاتورة';
+                // تعيين التاريخ
+                $('#inv-date').value = editData.date;
+                // تعيين العميل
+                const custSelect = $('#inv-customer');
+                if (custSelect) {
+                    const custId = editData.customer.id;
+                    // تأكد من وجود العميل في القائمة (قد يكون محذوفاً)
+                    if (state.customers.some(c => c.id === custId)) {
+                        custSelect.value = custId;
+                    } else {
+                        // إذا تم حذف العميل، نضعه كعميل نقدي (الأول)
+                        custSelect.value = state.customers[0]?.id || '';
+                    }
+                }
+                // تعيين الملاحظات
+                $('#inv-notes').value = editData.notes || '';
+                // تعيين الحالة
+                $('#inv-status').value = editData.status || 'غير مدفوعة';
+                // تعبئة عناصر الفاتورة
+                $('#inv-items').innerHTML = '';
+                editData.items.forEach(it => {
+                    // نبحث عن المنتج للتأكد من وجوده، ونأخذ بياناته
+                    const prod = state.products.find(p => p.id === it.productId);
+                    if (prod) {
+                        addItemRow({
+                            id: it.productId,
+                            qty: it.qty,
+                            price: it.price,
+                            tva: it.tva,
+                            remise: it.remise || 0,
+                            name: prod.name
+                        });
+                    } else {
+                        // المنتج غير موجود، نضيفه كمنتج غير معروف
+                        addItemRow({
+                            id: it.productId,
+                            qty: it.qty,
+                            price: it.price,
+                            tva: it.tva,
+                            remise: it.remise || 0,
+                            name: it.name || 'منتج غير معروف'
+                        });
+                    }
+                });
+                // إذا لم توجد عناصر، نضيف سطراً فارغاً
+                if (editData.items.length === 0) {
+                    addItemRow();
+                }
+                calcTotals();
+                // إزالة أي مسودة
+                localStorage.removeItem('invoice_draft');
+                // تحديث قائمة العملاء
+                renderCustomers();
+                // إظهار زر إلغاء التعديل
+                $('#btn-cancel-edit').onclick = function() {
+                    if (confirm('هل تريد إلغاء التعديل؟ سيتم فقدان التغييرات غير المحفوظة.')) {
+                        cancelEdit();
+                        go('invoices');
+                    }
+                };
+                return;
+            }
+
+            // الوضع العادي (فاتورة جديدة)
+            $('#pos-title').textContent = 'فاتورة جديدة';
+            $('#edit-badge').classList.add('hidden');
+            $('#btn-cancel-edit').classList.add('hidden');
+            $('#btn-cancel-edit').onclick = null;
+            // إذا كنا في وضع التعديل لكن بدون بيانات، نلغي التعديل
+            if (editingInvoiceId) {
+                cancelEdit();
+            }
+
             const draft = localStorage.getItem('invoice_draft');
             if (draft) {
                 try {
@@ -1519,8 +1656,17 @@
             const row = document.createElement('tr');
             row.dataset.id = id;
             row.className = 'border-b dark:border-slate-800';
+            // تحديد اسم المنتج إذا كان موجوداً
+            let selectedName = '';
+            if (p && p.name) {
+                selectedName = p.name;
+            }
             row.innerHTML = `<td class="py-2 pr-1">
-                <select class="item-product w-full h-9 px-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs">${state.products.map(pr=>`<option value="${pr.id}" ${p&&p.id===pr.id?'selected':''}>${pr.name}</option>`).join('')}</select>
+                <select class="item-product w-full h-9 px-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs">
+                    <option value="">-- اختر منتج --</option>
+                    ${state.products.map(pr => `<option value="${pr.id}" ${p && p.id === pr.id ? 'selected' : ''}>${pr.name}</option>`).join('')}
+                </select>
+                ${p && !state.products.some(pr => pr.id === p.id) ? `<input type="hidden" class="item-name-custom" value="${p.name || ''}">` : ''}
             </td>
             <td class="py-2 px-1"><input type="number" min="1" value="${p?.qty||1}" class="item-qty w-[70px] h-9 px-2 rounded-lg bg-slate-50 dark:bg-slate-800 border text-xs"></td>
             <td class="py-2 px-1"><input type="number" value="${p?.price||state.products[0]?.price||0}" class="item-price w-[110px] h-9 px-2 rounded-lg bg-slate-50 dark:bg-slate-800 border text-xs"></td>
@@ -1529,7 +1675,12 @@
             <td class="py-2 px-1 font-bold item-total">0.00</td>
             <td class="py-2 pl-1"><button class="w-8 h-8 grid place-items-center rounded-lg hover:bg-rose-100 text-rose-600" onclick="this.closest('tr').remove(); calcTotals(); autoSaveDraft();" aria-label="حذف سطر"><i class="fa-solid fa-xmark text-xs"></i></button></td>`;
             $('#inv-items').appendChild(row);
+            // إضافة مستمعي الأحداث
             row.querySelectorAll('input,select').forEach(el => el.addEventListener('input', () => { calcTotals(); autoSaveDraft(); }));
+            // تعيين اسم المنتج في dataset إذا كان موجوداً
+            if (p && p.name) {
+                row.dataset.name = p.name;
+            }
             if (p) calcTotals();
             autoSaveDraft();
         }
@@ -1539,9 +1690,11 @@
             if (!p) return showToast('المنتج غير موجود', 'error');
             if (p.stock <= 0) return showToast('🚫 نفد المخزون من ' + p.name, 'error');
             Sound.add();
-            addItemRow({ id: p.id, qty: 1, price: p.price, tva: p.tva, remise: 0 });
+            addItemRow({ id: p.id, qty: 1, price: p.price, tva: p.tva, remise: 0, name: p.name });
             $('#product-search').value = '';
             renderProductGrid('');
+            calcTotals();
+            autoSaveDraft();
         }
 
         $('#add-item').onclick = () => { addItemRow(); autoSaveDraft(); };
@@ -1565,14 +1718,21 @@
                 const pid = +tr.querySelector('.item-product').value;
                 const prod = state.products.find(p => p.id === pid);
                 const qty = +tr.querySelector('.item-qty').value || 0;
-                const price = +tr.querySelector('.item-price').value || 0;
+                let price = +tr.querySelector('.item-price').value || 0;
+                // إذا كان المنتج موجوداً، نأخذ سعره الافتراضي إذا كان السعر صفراً
+                if (prod && price === 0) {
+                    price = prod.price;
+                    tr.querySelector('.item-price').value = price;
+                }
                 const tv = +tr.querySelector('.item-tva').value || 0;
                 const rem = +tr.querySelector('.item-rem').value || 0;
                 const lineHT = qty * price * (1 - rem/100);
                 const lineTVA = lineHT * tv/100;
                 ht += lineHT; tva += lineTVA;
                 tr.querySelector('.item-total').textContent = (lineHT + lineTVA).toFixed(2);
-                tr.dataset.name = prod?.name || '';
+                if (prod) {
+                    tr.dataset.name = prod.name;
+                }
             });
             const timbre = +state.company.timbre || 0;
             const ttc = ht + tva + timbre;
@@ -1584,6 +1744,8 @@
         }
 
         function autoSaveDraft() {
+            // لا نحفظ المسودة أثناء التعديل
+            if (editingInvoiceId) return;
             try {
                 const items = [...$$('#inv-items tr')].map(tr => ({
                     id: tr.dataset.id,
@@ -1605,25 +1767,74 @@
             } catch(e) {}
         }
 
+        // ============================================================
+        //  SAVE INVOICE (CREATE + UPDATE)
+        // ============================================================
         $('#save-invoice').onclick = () => {
             try {
                 const totals = calcTotals();
-                const items = [...$$('#inv-items tr')].map(tr => ({
-                    productId: +tr.querySelector('.item-product').value,
-                    name: tr.dataset.name,
-                    qty: +tr.querySelector('.item-qty').value,
-                    price: +tr.querySelector('.item-price').value,
-                    tva: +tr.querySelector('.item-tva').value,
-                    remise: +tr.querySelector('.item-rem').value
-                }));
+                const items = [...$$('#inv-items tr')].map(tr => {
+                    const pid = +tr.querySelector('.item-product').value;
+                    const prod = state.products.find(p => p.id === pid);
+                    return {
+                        productId: pid,
+                        name: tr.dataset.name || (prod ? prod.name : 'منتج غير معروف'),
+                        qty: +tr.querySelector('.item-qty').value,
+                        price: +tr.querySelector('.item-price').value,
+                        tva: +tr.querySelector('.item-tva').value,
+                        remise: +tr.querySelector('.item-rem').value
+                    };
+                }).filter(it => it.qty > 0 && it.productId > 0); // نتجاهل الأسطر الفارغة
+
                 if (items.length === 0) return showToast('أضف منتج واحد على الأقل', 'error');
                 const cust = state.customers.find(c => c.id === +$('#inv-customer').value);
+                if (!cust) return showToast('اختر عميلاً صحيحاً', 'error');
+
                 const inv = {
-                    id: uid(), number: $('#inv-number').value, type: $('#inv-type').value,
-                    date: $('#inv-date').value, customer: cust, items, totals,
-                    notes: $('#inv-notes').value, status: $('#inv-status').value,
+                    id: editingInvoiceId || uid(),
+                    number: $('#inv-number').value,
+                    type: $('#inv-type').value,
+                    date: $('#inv-date').value,
+                    customer: cust,
+                    items: items,
+                    totals: totals,
+                    notes: $('#inv-notes').value,
+                    status: $('#inv-status').value,
                     company: { ...state.company }
                 };
+
+                // إذا كنا في وضع التعديل
+                if (editingInvoiceId) {
+                    // حساب فروقات المخزون بين النسخة الأصلية والجديدة
+                    const diff = calculateStockDifferences(originalInvoiceData.items, items);
+                    // تطبيق الفروقات على المخزون
+                    updateState(s => {
+                        // تحديث المخزون
+                        Object.keys(diff).forEach(pid => {
+                            const p = s.products.find(x => x.id === +pid);
+                            if (p) {
+                                const change = diff[pid];
+                                if (change !== 0) {
+                                    p.stock = Math.max(0, p.stock + change);
+                                }
+                            }
+                        });
+                        // تحديث الفاتورة
+                        const idx = s.invoices.findIndex(i => i.id === editingInvoiceId);
+                        if (idx !== -1) {
+                            s.invoices[idx] = inv;
+                        }
+                    });
+                    showToast(`تم تحديث الفاتورة ${inv.number}`, 'success');
+                    // إلغاء حالة التعديل
+                    cancelEdit();
+                    renderInvoices();
+                    renderDashboard();
+                    go('invoices');
+                    return;
+                }
+
+                // فاتورة جديدة
                 updateState(s => {
                     s.invoices.unshift(inv);
                     s.counters.inv++;
@@ -1659,20 +1870,24 @@
 
         function collectCurrentInvoice() {
             const totals = calcTotals();
-            const items = [...$$('#inv-items tr')].map(tr => ({
-                name: tr.dataset.name,
-                qty: +tr.querySelector('.item-qty').value,
-                price: +tr.querySelector('.item-price').value,
-                tva: +tr.querySelector('.item-tva').value,
-                remise: +tr.querySelector('.item-rem').value
-            }));
+            const items = [...$$('#inv-items tr')].map(tr => {
+                const pid = +tr.querySelector('.item-product').value;
+                const prod = state.products.find(p => p.id === pid);
+                return {
+                    name: tr.dataset.name || (prod ? prod.name : 'منتج غير معروف'),
+                    qty: +tr.querySelector('.item-qty').value,
+                    price: +tr.querySelector('.item-price').value,
+                    tva: +tr.querySelector('.item-tva').value,
+                    remise: +tr.querySelector('.item-rem').value
+                };
+            }).filter(it => it.qty > 0);
             if (items.length === 0) { showToast('لا توجد منتجات في الفاتورة', 'error'); return null; }
             const cust = state.customers.find(c => c.id === +$('#inv-customer').value);
             return {
                 number: $('#inv-number').value,
                 type: $('#inv-type').value,
                 date: $('#inv-date').value,
-                customer: cust,
+                customer: cust || state.customers[0],
                 items,
                 totals,
                 notes: $('#inv-notes').value,
