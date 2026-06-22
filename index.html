@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>فَوْتَرَة كامل - نظام الفوترة الجزائري (إشعارات ذكية)</title>
+    <title>فَوْتَرَة كامل - نظام الفوترة الجزائري (أسماء منتجات واضحة)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -86,6 +86,7 @@
         .invoice-row:hover { filter: brightness(0.97); transition: 0.15s; }
         .dark .invoice-row:hover { filter: brightness(1.05); }
 
+        /* ===== تحسين عرض المنتجات في شبكة POS ===== */
         .product-grid-card {
             background: white;
             border-radius: 16px;
@@ -100,15 +101,69 @@
             align-items: center;
             gap: 4px;
         }
-        .dark .product-grid-card { background: #1e293b; border-color: #334155; }
-        .product-grid-card:hover { transform: translateY(-4px); border-color: #0ea5e9; box-shadow: 0 8px 25px rgba(14,165,233,0.15); }
-        .product-grid-card img { width: 60px; height: 60px; object-fit: cover; border-radius: 10px; border: 1px solid #e2e8f0; background: white; }
-        .dark .product-grid-card img { border-color: #475569; background: #0f172a; }
-        .product-grid-card .product-name { font-weight: 700; font-size: 0.9rem; margin-top: 4px; line-height: 1.3; }
-        .product-grid-card .product-price { color: #0ea5e9; font-weight: 800; font-size: 0.9rem; }
-        .product-grid-card .add-btn { position: absolute; top: -8px; left: -8px; width: 28px; height: 28px; border-radius: 50%; background: #0ea5e9; color: white; border: none; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(14,165,233,0.3); transition: 0.2s; }
-        .product-grid-card .add-btn:hover { transform: scale(1.1); background: #0284c7; }
-        .dark .product-grid-card .add-btn { background: #0284c7; }
+        .dark .product-grid-card {
+            background: #1e293b;
+            border-color: #334155;
+        }
+        .product-grid-card:hover {
+            transform: translateY(-4px);
+            border-color: #0ea5e9;
+            box-shadow: 0 8px 25px rgba(14,165,233,0.15);
+        }
+        .product-grid-card img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            background: white;
+        }
+        .dark .product-grid-card img {
+            border-color: #475569;
+            background: #0f172a;
+        }
+        /* اسم المنتج - باللون الأسود الواضح في الوضع الفاتح */
+        .product-grid-card .product-name {
+            font-weight: 800;
+            font-size: 0.95rem;
+            margin-top: 4px;
+            line-height: 1.3;
+            color: #000000; /* أسود صريح وواضح */
+        }
+        /* اسم المنتج في الوضع الداكن - أبيض فاتح للوضوح على الخلفية الداكنة */
+        .dark .product-grid-card .product-name {
+            color: #f1f5f9;
+        }
+        .product-grid-card .product-price {
+            color: #0ea5e9;
+            font-weight: 800;
+            font-size: 0.9rem;
+        }
+        .product-grid-card .add-btn {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #0ea5e9;
+            color: white;
+            border: none;
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(14,165,233,0.3);
+            transition: 0.2s;
+        }
+        .product-grid-card .add-btn:hover {
+            transform: scale(1.1);
+            background: #0284c7;
+        }
+        .dark .product-grid-card .add-btn {
+            background: #0284c7;
+        }
 
         .scanner-controls {
             display: flex;
@@ -276,7 +331,6 @@
         .dark .notif-item .icon.new_invoice { background: #064e3b; color: #6ee7b7; }
         .dark .notif-item .icon.system { background: #1e1b4b; color: #818cf8; }
         .notif-item .content { flex: 1; min-width: 0; }
-        /* ===== تحسين وضوح الخط ===== */
         .notif-item .content .msg {
             font-size: 13px;
             line-height: 1.5;
@@ -369,7 +423,7 @@
                 </div>
                 <div>
                     <h1 class="font-extrabold text-lg leading-none">فَوْتَرَة</h1>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400">الإصدار الجزائري v4.2</p>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">الإصدار الجزائري v4.3</p>
                 </div>
             </div>
             <nav class="p-3 space-y-1.5 overflow-y-auto">
@@ -417,12 +471,10 @@
                         <input id="global-search" placeholder="بحث سريع..." class="bg-transparent outline-none w-full text-sm">
                     </div>
                     <div class="ms-auto flex items-center gap-2 relative">
-                        <!-- جرس الإشعارات -->
                         <div class="notif-bell" id="notif-bell" onclick="toggleNotifPanel()" aria-label="الإشعارات">
                             <i class="fa-regular fa-bell text-xl"></i>
                             <span class="badge hidden" id="notif-badge">0</span>
                         </div>
-                        <!-- لوحة الإشعارات -->
                         <div class="notif-panel" id="notif-panel">
                             <div class="notif-panel-header">
                                 <span>📢 الإشعارات</span>
@@ -700,7 +752,6 @@
                                     <span class="w-12 h-7 bg-slate-200 dark:bg-slate-700 rounded-full relative transition"><span class="dot absolute top-1 right-1 w-5 h-5 bg-white rounded-full transition"></span></span>
                                 </label>
                             </div>
-                            <!-- إعدادات الإشعارات -->
                             <div class="pt-3 border-t dark:border-slate-800 space-y-2">
                                 <h4 class="font-bold text-sm">🔔 إعدادات الإشعارات</h4>
                                 <div class="grid grid-cols-2 gap-2 text-xs">
