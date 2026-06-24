@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>فَوْتَرَة كامل - نظام الفوترة الجزائري (صور واضحة)</title>
+    <title>فَوْتَرَة كامل - نظام الفوترة الجزائري (Dashboard محسّن)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,6 +53,7 @@
             .edit-badge { display: none !important; }
         }
 
+        /* ===== تحسينات الهواتف ===== */
         @media (max-width: 480px) {
             .table-wrap { font-size: 0.7rem !important; }
             .table-wrap td, .table-wrap th { padding: 0.4rem 0.3rem !important; }
@@ -61,6 +62,31 @@
             .product-grid-card { padding: 0.5rem !important; }
             .product-grid-card img { width: 40px !important; height: 40px !important; }
             .notif-panel { width: 95% !important; right: 2.5% !important; left: 2.5% !important; max-height: 70vh !important; }
+            
+            /* تحسين Dashboard للهواتف */
+            .dashboard-stats { grid-template-columns: 1fr 1fr !important; gap: 0.5rem !important; }
+            .dashboard-stats .stat-card { padding: 0.75rem !important; }
+            .dashboard-stats .stat-card .stat-number { font-size: 1.25rem !important; }
+            .dashboard-stats .stat-card .stat-label { font-size: 0.65rem !important; }
+            
+            .dashboard-chart { height: 180px !important; }
+            .dashboard-chart-container { padding: 0.75rem !important; }
+            
+            .dashboard-invoices-table { display: none !important; }
+            .dashboard-invoices-cards { display: block !important; }
+            
+            .dashboard-top-products { padding: 0.75rem !important; }
+            .dashboard-top-products .product-item { padding: 0.5rem !important; font-size: 0.75rem !important; }
+        }
+        @media (min-width: 481px) and (max-width: 768px) {
+            .dashboard-stats { grid-template-columns: 1fr 1fr !important; }
+            .dashboard-chart { height: 200px !important; }
+            .dashboard-invoices-table { display: none !important; }
+            .dashboard-invoices-cards { display: block !important; }
+        }
+        @media (min-width: 769px) {
+            .dashboard-invoices-cards { display: none !important; }
+            .dashboard-invoices-table { display: block !important; }
         }
 
         input[type=number]::-webkit-inner-spin-button { opacity: 1; }
@@ -104,15 +130,7 @@
         }
         .dark .product-grid-card { background: #1e293b; border-color: #334155; }
         .product-grid-card:hover { transform: translateY(-4px); border-color: #0ea5e9; box-shadow: 0 8px 25px rgba(14,165,233,0.15); }
-        /* حجم الصورة في شبكة POS - 64x64 */
-        .product-grid-card img {
-            width: 64px;
-            height: 64px;
-            object-fit: cover;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            background: white;
-        }
+        .product-grid-card img { width: 64px; height: 64px; object-fit: cover; border-radius: 12px; border: 1px solid #e2e8f0; background: white; }
         .dark .product-grid-card img { border-color: #475569; background: #0f172a; }
         .product-grid-card .product-name {
             font-weight: 800;
@@ -376,7 +394,7 @@
         }
         .dark .edit-badge { background: #d97706; }
 
-        /* تنسيق الصورة في جدول المنتجات بحجم أكبر */
+        /* تنسيق الصورة في جدول المنتجات */
         .product-table-img {
             width: 80px;
             height: 80px;
@@ -406,6 +424,43 @@
             border-color: #334155;
             color: #64748b;
         }
+
+        /* ===== بطاقات Dashboard للهواتف ===== */
+        .dashboard-invoice-card {
+            background: white;
+            border-radius: 12px;
+            padding: 10px 14px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dark .dashboard-invoice-card {
+            background: #1e293b;
+            border-color: #334155;
+        }
+        .dashboard-invoice-card .number {
+            font-weight: 700;
+            font-size: 0.8rem;
+            font-family: monospace;
+        }
+        .dashboard-invoice-card .customer {
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        .dashboard-invoice-card .amount {
+            font-weight: 800;
+            font-size: 0.85rem;
+            color: #0ea5e9;
+        }
+        .dashboard-invoice-card .status-badge {
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+        .dark .dashboard-invoice-card .amount { color: #38bdf8; }
     </style>
 </head>
 <body class="bg-[#f7f8fb] dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors">
@@ -421,7 +476,7 @@
                 </div>
                 <div>
                     <h1 class="font-extrabold text-lg leading-none">فَوْتَرَة</h1>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400">الإصدار الجزائري v4.6</p>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">الإصدار الجزائري v4.7</p>
                 </div>
             </div>
             <nav class="p-3 space-y-1.5 overflow-y-auto">
@@ -501,68 +556,76 @@
             </header>
 
             <main class="p-3 sm:p-6 pb-24 lg:pb-6 max-w-[1400px] w-full mx-auto">
-                <!-- DASHBOARD -->
-                <section id="page-dashboard" class="page space-y-5 animate-in">
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
-                        <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+                <!-- ============================================================
+                DASHBOARD (محسّن للهواتف)
+                ============================================================ -->
+                <section id="page-dashboard" class="page space-y-4 sm:space-y-5 animate-in">
+                    <!-- البطاقات الإحصائية -->
+                    <div class="dashboard-stats grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-5">
+                        <div class="stat-card bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-3 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
                             <div class="flex items-center justify-between">
-                                <p class="text-sm text-slate-500">إجمالي المبيعات</p>
-                                <i class="fa-solid fa-sack-dollar text-emerald-500"></i>
+                                <p class="stat-label text-[10px] sm:text-sm text-slate-500">إجمالي المبيعات</p>
+                                <i class="fa-solid fa-sack-dollar text-emerald-500 text-sm sm:text-base"></i>
                             </div>
-                            <h3 id="stat-sales" class="text-2xl font-extrabold mt-3">0 دج</h3>
-                            <p class="text-xs mt-1 text-emerald-600">هذا الشهر</p>
+                            <h3 id="stat-sales" class="stat-number text-lg sm:text-2xl font-extrabold mt-1 sm:mt-3">0 دج</h3>
+                            <p class="text-[9px] sm:text-xs mt-0.5 sm:mt-1 text-emerald-600">هذا الشهر</p>
                         </div>
-                        <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div class="stat-card bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-3 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
                             <div class="flex items-center justify-between">
-                                <p class="text-sm text-slate-500">الفواتير</p>
-                                <i class="fa-solid fa-file-lines text-sky-500"></i>
+                                <p class="stat-label text-[10px] sm:text-sm text-slate-500">الفواتير</p>
+                                <i class="fa-solid fa-file-lines text-sky-500 text-sm sm:text-base"></i>
                             </div>
-                            <h3 id="stat-invoices" class="text-2xl font-extrabold mt-3">0</h3>
-                            <p class="text-xs mt-1 text-slate-500">إجمالي الفواتير</p>
+                            <h3 id="stat-invoices" class="stat-number text-lg sm:text-2xl font-extrabold mt-1 sm:mt-3">0</h3>
+                            <p class="text-[9px] sm:text-xs mt-0.5 sm:mt-1 text-slate-500">إجمالي الفواتير</p>
                         </div>
-                        <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div class="stat-card bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-3 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
                             <div class="flex items-center justify-between">
-                                <p class="text-sm text-slate-500">العملاء</p>
-                                <i class="fa-solid fa-user-group text-violet-500"></i>
+                                <p class="stat-label text-[10px] sm:text-sm text-slate-500">العملاء</p>
+                                <i class="fa-solid fa-user-group text-violet-500 text-sm sm:text-base"></i>
                             </div>
-                            <h3 id="stat-customers" class="text-2xl font-extrabold mt-3">0</h3>
-                            <p class="text-xs mt-1 text-slate-500">عميل نشط</p>
+                            <h3 id="stat-customers" class="stat-number text-lg sm:text-2xl font-extrabold mt-1 sm:mt-3">0</h3>
+                            <p class="text-[9px] sm:text-xs mt-0.5 sm:mt-1 text-slate-500">عميل نشط</p>
                         </div>
-                        <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div class="stat-card bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-3 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
                             <div class="flex items-center justify-between">
-                                <p class="text-sm text-slate-500">المخزون</p>
-                                <i class="fa-solid fa-cubes text-amber-500"></i>
+                                <p class="stat-label text-[10px] sm:text-sm text-slate-500">المخزون</p>
+                                <i class="fa-solid fa-cubes text-amber-500 text-sm sm:text-base"></i>
                             </div>
-                            <h3 id="stat-stock" class="text-2xl font-extrabold mt-3">0</h3>
-                            <p class="text-xs mt-1 text-amber-600">منتج منخفض</p>
+                            <h3 id="stat-stock" class="stat-number text-lg sm:text-2xl font-extrabold mt-1 sm:mt-3">0</h3>
+                            <p class="text-[9px] sm:text-xs mt-0.5 sm:mt-1 text-amber-600">منتج منخفض</p>
                         </div>
                     </div>
 
-                    <div class="grid lg:grid-cols-3 gap-5">
-                        <div class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800">
-                            <div class="flex items-center justify-between mb-4">
-                                <h4 class="font-bold">المبيعات آخر 7 أيام</h4>
-                                <span class="text-xs px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800">دج</span>
+                    <!-- الرسم البياني + المنتجات الأكثر مبيعاً -->
+                    <div class="grid lg:grid-cols-3 gap-3 sm:gap-5">
+                        <div class="dashboard-chart-container lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-3 sm:p-5 border border-slate-200 dark:border-slate-800">
+                            <div class="flex items-center justify-between mb-2 sm:mb-4">
+                                <h4 class="font-bold text-sm sm:text-base">المبيعات آخر 7 أيام</h4>
+                                <span class="text-[10px] sm:text-xs px-2 py-0.5 sm:py-1 rounded-lg bg-slate-100 dark:bg-slate-800">دج</span>
                             </div>
-                            <div class="h-[240px]"><canvas id="salesChart"></canvas></div>
+                            <div class="dashboard-chart h-[180px] sm:h-[240px]"><canvas id="salesChart"></canvas></div>
                         </div>
-                        <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800">
-                            <h4 class="font-bold mb-4">أكثر المنتجات مبيعاً</h4>
-                            <div id="top-products" class="space-y-3 text-sm"></div>
+                        <div class="dashboard-top-products bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-3 sm:p-5 border border-slate-200 dark:border-slate-800">
+                            <h4 class="font-bold text-sm sm:text-base mb-2 sm:mb-4">أكثر المنتجات مبيعاً</h4>
+                            <div id="top-products" class="space-y-2 sm:space-y-3 text-xs sm:text-sm"></div>
                         </div>
                     </div>
 
-                    <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800">
-                        <div class="flex items-center justify-between mb-3">
-                            <h4 class="font-bold">آخر الفواتير</h4>
-                            <button data-page="invoices" class="nav-btn text-xs text-sky-600 font-bold">عرض الكل</button>
+                    <!-- آخر الفواتير -->
+                    <div class="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-3 sm:p-5 border border-slate-200 dark:border-slate-800">
+                        <div class="flex items-center justify-between mb-2 sm:mb-3">
+                            <h4 class="font-bold text-sm sm:text-base">آخر الفواتير</h4>
+                            <button data-page="invoices" class="nav-btn text-[10px] sm:text-xs text-sky-600 font-bold">عرض الكل</button>
                         </div>
-                        <div class="overflow-x-auto -mx-2">
-                            <table class="w-full text-sm min-w-[640px]">
-                                <thead><tr class="text-slate-500 border-b dark:border-slate-800"><th class="text-right p-2">الرقم</th><th class="text-right p-2">العميل</th><th class="text-right p-2">التاريخ</th><th class="text-right p-2">المبلغ</th><th class="text-right p-2">الحالة</th></tr></thead>
-                                <tbody id="latest-invoices"></tbody>
+                        <!-- جدول للشاشات الكبيرة -->
+                        <div class="dashboard-invoices-table overflow-x-auto -mx-2">
+                            <table class="w-full text-[10px] sm:text-sm min-w-[540px]">
+                                <thead><tr class="text-slate-500 border-b dark:border-slate-800"><th class="text-right p-1 sm:p-2">الرقم</th><th class="text-right p-1 sm:p-2">العميل</th><th class="text-right p-1 sm:p-2">التاريخ</th><th class="text-right p-1 sm:p-2">المبلغ</th><th class="text-right p-1 sm:p-2">الحالة</th></tr></thead>
+                                <tbody id="latest-invoices-table"></tbody>
                             </table>
                         </div>
+                        <!-- بطاقات للهواتف -->
+                        <div class="dashboard-invoices-cards" id="latest-invoices-cards"></div>
                     </div>
                 </section>
 
@@ -592,7 +655,7 @@
                     </div>
                 </section>
 
-                <!-- PRODUCTS (مع صور أكبر) -->
+                <!-- PRODUCTS -->
                 <section id="page-products" class="page hidden space-y-4 animate-in">
                     <div class="flex items-center justify-between">
                         <h2 class="text-xl font-extrabold">المنتجات والمخزون</h2>
@@ -1230,7 +1293,7 @@
         }
 
         // ============================================================
-        //  DASHBOARD
+        //  DASHBOARD (محسّن للهواتف)
         // ============================================================
         let salesChart = null;
         function renderDashboard() {
@@ -1241,6 +1304,7 @@
             const low = state.products.filter(p => p.stock < 10).length;
             $('#stat-stock').textContent = low;
 
+            // الرسم البياني
             const ctx = $('#salesChart');
             const days = [...Array(7)].map((_, i) => { const d = new Date(); d.setDate(d.getDate() - 6 + i); return d; });
             const labels = days.map(d => d.toLocaleDateString('ar-DZ', { weekday: 'short' }));
@@ -1254,23 +1318,54 @@
                 salesChart = new Chart(ctx, {
                     type: 'line',
                     data: { labels, datasets: [{ data, tension: .4, fill: true, borderColor: '#0ea5e9', backgroundColor: 'rgba(14,165,233,.15)' }] },
-                    options: { plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => v } } } }
+                    options: {
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { ticks: { callback: v => v, font: { size: window.innerWidth < 480 ? 8 : 11 } } },
+                            x: { ticks: { font: { size: window.innerWidth < 480 ? 8 : 11 } } }
+                        },
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
                 });
             }
 
+            // أكثر المنتجات مبيعاً
             const top = {};
             state.invoices.forEach(inv => inv.items.forEach(it => { top[it.name] = (top[it.name] || 0) + Number(it.qty); }));
             const topList = Object.entries(top).sort((a,b) => b[1] - a[1]).slice(0,5);
-            $('#top-products').innerHTML = topList.map(([n,q]) => `<div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800"><span>${n}</span><b>${q}</b></div>`).join('') || '<p class="text-slate-500 text-sm">لا توجد مبيعات بعد</p>';
+            $('#top-products').innerHTML = topList.map(([n,q]) => `
+                <div class="product-item flex items-center justify-between p-2 sm:p-3 rounded-xl bg-slate-50 dark:bg-slate-800">
+                    <span class="text-xs sm:text-sm">${n}</span>
+                    <b class="text-xs sm:text-sm">${q}</b>
+                </div>
+            `).join('') || '<p class="text-slate-500 text-xs sm:text-sm">لا توجد مبيعات بعد</p>';
 
+            // آخر الفواتير - جدول للشاشات الكبيرة
             const latest = [...state.invoices].sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0,6);
-            $('#latest-invoices').innerHTML = latest.map(i => `<tr class="border-b dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                <td class="p-2 font-mono">${i.number}</td>
-                <td class="p-2">${i.customer.name}</td>
-                <td class="p-2">${new Date(i.date).toLocaleDateString('ar-DZ')}</td>
-                <td class="p-2 font-bold">${money(i.totals.ttc)}</td>
-                <td class="p-2"><span class="px-2 py-1 rounded-lg text-[11px] font-bold ${i.status==='مدفوعة'?'bg-emerald-100 text-emerald-700':'bg-amber-100 text-amber-700'}">${i.status}</span></td>
-            </tr>`).join('') || '<tr><td colspan=5 class="p-4 text-center text-slate-500">لا توجد فواتير</td></tr>';
+            $('#latest-invoices-table').innerHTML = latest.map(i => `
+                <tr class="border-b dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                    <td class="p-1 sm:p-2 font-mono text-[10px] sm:text-sm">${i.number}</td>
+                    <td class="p-1 sm:p-2 text-[10px] sm:text-sm">${i.customer.name}</td>
+                    <td class="p-1 sm:p-2 text-[10px] sm:text-sm">${new Date(i.date).toLocaleDateString('ar-DZ')}</td>
+                    <td class="p-1 sm:p-2 font-bold text-[10px] sm:text-sm">${money(i.totals.ttc)}</td>
+                    <td class="p-1 sm:p-2"><span class="px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg text-[9px] sm:text-[11px] font-bold ${i.status==='مدفوعة'?'bg-emerald-100 text-emerald-700':'bg-amber-100 text-amber-700'}">${i.status}</span></td>
+                </tr>
+            `).join('') || '<tr><td colspan=5 class="p-4 text-center text-slate-500 text-xs sm:text-sm">لا توجد فواتير</td></tr>';
+
+            // آخر الفواتير - بطاقات للهواتف
+            $('#latest-invoices-cards').innerHTML = latest.map(i => `
+                <div class="dashboard-invoice-card">
+                    <div>
+                        <div class="number">${i.number}</div>
+                        <div class="customer">${i.customer.name}</div>
+                    </div>
+                    <div class="text-left">
+                        <div class="amount">${money(i.totals.ttc)}</div>
+                        <span class="status-badge ${i.status==='مدفوعة'?'bg-emerald-100 text-emerald-700':'bg-amber-100 text-amber-700'}">${i.status}</span>
+                    </div>
+                </div>
+            `).join('') || '<div class="text-center text-slate-500 text-sm p-4">لا توجد فواتير</div>';
         }
 
         // ============================================================
@@ -1278,7 +1373,6 @@
         // ============================================================
         let pendingAddToInvoice = false;
 
-        // دالة معالجة الصورة
         function handleImageFile(file) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -1583,7 +1677,7 @@
         }
 
         // ============================================================
-        //  POS / CREATE INVOICE (مع دعم التعديل)
+        //  POS / CREATE INVOICE
         // ============================================================
         function initInvoice(editData = null) {
             if (editData) {
@@ -1793,7 +1887,7 @@
         }
 
         // ============================================================
-        //  SAVE INVOICE (CREATE + UPDATE)
+        //  SAVE INVOICE
         // ============================================================
         $('#save-invoice').onclick = () => {
             try {
