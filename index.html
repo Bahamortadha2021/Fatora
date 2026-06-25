@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>فَوْتَرَة كامل - نظام الفوترة الجزائري (نسخ احتياطي كامل)</title>
+    <title>فَوْتَرَة كامل - نظام الفوترة الجزائري (تحديث القائمة)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,7 +14,7 @@
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        /* جميع الأنماط السابقة (مختصرة للاختصار، سيتم تضمينها كاملة في الكود النهائي) */
+        /* جميع الأنماط السابقة (محذوفة للاختصار، ولكن يجب وضعها كاملة في الكود النهائي) */
         * { font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
@@ -468,7 +468,7 @@
                 </div>
                 <div>
                     <h1 class="font-extrabold text-lg leading-none">فَوْتَرَة</h1>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400">الإصدار الجزائري v5.2</p>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">الإصدار الجزائري v5.0</p>
                 </div>
             </div>
             <nav class="p-3 space-y-1.5 overflow-y-auto">
@@ -640,7 +640,7 @@
                     </div>
                 </section>
 
-                <!-- PRODUCTS -->
+                <!-- PRODUCTS (مع زر تحديث القائمة) -->
                 <section id="page-products" class="page hidden space-y-4 animate-in">
                     <div class="flex items-center justify-between flex-wrap gap-2">
                         <h2 class="text-xl font-extrabold">المنتجات والمخزون</h2>
@@ -879,7 +879,7 @@
 
     <script>
         // ============================================================
-        //  SOUND MANAGER (كما هو)
+        //  SOUND MANAGER
         // ============================================================
         const Sound = (function() {
             let audioCtx = null;
@@ -918,156 +918,13 @@
         })();
 
         // ============================================================
-        //  IMAGE STORE (IndexedDB) - حفظ الصور الكبيرة بشكل دائم
-        // ============================================================
-        const ImageStore = (function() {
-            const DB_NAME = 'FawtaraImages';
-            const STORE_NAME = 'images';
-            let db = null;
-
-            function openDB() {
-                return new Promise((resolve, reject) => {
-                    if (db) { resolve(db); return; }
-                    const request = indexedDB.open(DB_NAME, 1);
-                    request.onupgradeneeded = function(e) {
-                        const d = e.target.result;
-                        if (!d.objectStoreNames.contains(STORE_NAME)) {
-                            d.createObjectStore(STORE_NAME, { keyPath: 'id' });
-                        }
-                    };
-                    request.onsuccess = function(e) {
-                        db = e.target.result;
-                        resolve(db);
-                    };
-                    request.onerror = function(e) {
-                        reject(e.target.error);
-                    };
-                });
-            }
-
-            function saveImage(id, dataUrl) {
-                return openDB().then(db => {
-                    return new Promise((resolve, reject) => {
-                        const tx = db.transaction(STORE_NAME, 'readwrite');
-                        const store = tx.objectStore(STORE_NAME);
-                        const record = { id, data: dataUrl };
-                        const request = store.put(record);
-                        request.onsuccess = () => resolve(id);
-                        request.onerror = () => reject(request.error);
-                    });
-                });
-            }
-
-            function getImage(id) {
-                return openDB().then(db => {
-                    return new Promise((resolve, reject) => {
-                        const tx = db.transaction(STORE_NAME, 'readonly');
-                        const store = tx.objectStore(STORE_NAME);
-                        const request = store.get(id);
-                        request.onsuccess = () => {
-                            const record = request.result;
-                            resolve(record ? record.data : null);
-                        };
-                        request.onerror = () => reject(request.error);
-                    });
-                });
-            }
-
-            function deleteImage(id) {
-                return openDB().then(db => {
-                    return new Promise((resolve, reject) => {
-                        const tx = db.transaction(STORE_NAME, 'readwrite');
-                        const store = tx.objectStore(STORE_NAME);
-                        const request = store.delete(id);
-                        request.onsuccess = () => resolve();
-                        request.onerror = () => reject(request.error);
-                    });
-                });
-            }
-
-            function getAllImages() {
-                return openDB().then(db => {
-                    return new Promise((resolve, reject) => {
-                        const tx = db.transaction(STORE_NAME, 'readonly');
-                        const store = tx.objectStore(STORE_NAME);
-                        const request = store.getAll();
-                        request.onsuccess = () => resolve(request.result);
-                        request.onerror = () => reject(request.error);
-                    });
-                });
-            }
-
-            function clearAll() {
-                return openDB().then(db => {
-                    return new Promise((resolve, reject) => {
-                        const tx = db.transaction(STORE_NAME, 'readwrite');
-                        const store = tx.objectStore(STORE_NAME);
-                        const request = store.clear();
-                        request.onsuccess = () => resolve();
-                        request.onerror = () => reject(request.error);
-                    });
-                });
-            }
-
-            // ترحيل الصور القديمة من state إلى IndexedDB
-            function migrateImagesFromState(state) {
-                const promises = [];
-                // ترحيل صور المنتجات
-                state.products.forEach(p => {
-                    if (p.image && p.image.startsWith('data:image')) {
-                        const id = `product_${p.id}`;
-                        promises.push(saveImage(id, p.image).then(() => {
-                            delete p.image;
-                            p.imageId = id;
-                        }).catch(() => {}));
-                    } else if (p.imageId) {
-                        // موجود بالفعل
-                    }
-                });
-                // ترحيل شعار الشركة
-                if (state.company.logo && state.company.logo.startsWith('data:image')) {
-                    const id = 'company_logo';
-                    promises.push(saveImage(id, state.company.logo).then(() => {
-                        delete state.company.logo;
-                        state.company.logoId = id;
-                    }).catch(() => {}));
-                } else if (state.company.logoId) {
-                    // موجود
-                }
-                // ترحيل ختم الشركة
-                if (state.company.stamp && state.company.stamp.startsWith('data:image')) {
-                    const id = 'company_stamp';
-                    promises.push(saveImage(id, state.company.stamp).then(() => {
-                        delete state.company.stamp;
-                        state.company.stampId = id;
-                    }).catch(() => {}));
-                } else if (state.company.stampId) {
-                    // موجود
-                }
-                return Promise.all(promises).then(() => {
-                    // حفظ state بعد التعديل
-                    saveState();
-                });
-            }
-
-            return {
-                saveImage,
-                getImage,
-                deleteImage,
-                getAllImages,
-                clearAll,
-                migrateImagesFromState
-            };
-        })();
-
-        // ============================================================
-        //  STATE MANAGEMENT (محسن للصور)
+        //  STATE MANAGEMENT
         // ============================================================
         const $ = s => document.querySelector(s);
         const $$ = s => document.querySelectorAll(s);
-        const storeKey = 'fawtara_kamel_v5';
+        const storeKey = 'fawtara_kamel_v3';
         let state = JSON.parse(localStorage.getItem(storeKey) || 'null') || {
-            company: { name: 'مؤسستي', activity: 'تجارة', address: 'الجزائر', phone: '0555 00 00 00', email: '', nif: '', nis: '', rc: '', ai: '', rib: '', tva: 19, timbre: 0, currency: 'دج', footer: 'شكرا لتعاملكم معنا', logoId: '', stampId: '' },
+            company: { name: 'مؤسستي', activity: 'تجارة', address: 'الجزائر', phone: '0555 00 00 00', email: '', nif: '', nis: '', rc: '', ai: '', rib: '', tva: 19, timbre: 0, currency: 'دج', footer: 'شكرا لتعاملكم معنا', logo: '', stamp: '' },
             products: [],
             customers: [],
             invoices: [],
@@ -1084,12 +941,11 @@
                 }
             }
         };
-        // تهيئة البيانات الافتراضية إذا كانت فارغة
         if (state.products.length === 0) {
             state.products = [
-                { id: 1, name: 'خدمة صيانة', ref: 'SRV001', buy: 0, price: 5000, tva: 19, stock: 999, imageId: '' },
-                { id: 2, name: 'منتج A', ref: 'PRD001', buy: 800, price: 1200, tva: 19, stock: 45, imageId: '' },
-                { id: 3, name: 'منتج B', ref: 'PRD002', buy: 1500, price: 2100, tva: 19, stock: 12, imageId: '' },
+                { id: 1, name: 'خدمة صيانة', ref: 'SRV001', buy: 0, price: 5000, tva: 19, stock: 999, image: '' },
+                { id: 2, name: 'منتج A', ref: 'PRD001', buy: 800, price: 1200, tva: 19, stock: 45, image: '' },
+                { id: 3, name: 'منتج B', ref: 'PRD002', buy: 1500, price: 2100, tva: 19, stock: 12, image: '' },
             ];
             state.customers = [
                 { id: 1, name: 'عميل نقدي', phone: '', nif: '', nis: '', rc: '', ai: '', address: '' },
@@ -1159,7 +1015,7 @@
         }
 
         // ============================================================
-        //  NOTIFICATIONS SYSTEM (كما هو)
+        //  NOTIFICATIONS SYSTEM
         // ============================================================
         function addNotification(type, message, data = null) {
             const settings = state.notifications.settings;
@@ -1345,7 +1201,7 @@
         }
 
         // ============================================================
-        //  NAVIGATION (كما هو)
+        //  NAVIGATION
         // ============================================================
         $$('.nav-btn').forEach(b => b.addEventListener('click', () => go(b.dataset.page)));
 
@@ -1379,7 +1235,7 @@
         };
 
         // ============================================================
-        //  EDIT INVOICE (كما هو)
+        //  EDIT INVOICE FUNCTIONALITY
         // ============================================================
         let editingInvoiceId = null;
         let originalInvoiceData = null;
@@ -1428,7 +1284,7 @@
         }
 
         // ============================================================
-        //  DASHBOARD (كما هو)
+        //  DASHBOARD
         // ============================================================
         let salesChart = null;
         function renderDashboard() {
@@ -1500,101 +1356,35 @@
         }
 
         // ============================================================
-        //  PRODUCTS (محسن للصور)
+        //  PRODUCTS (مع زر تحديث القائمة)
         // ============================================================
         let pendingAddToInvoice = false;
 
-        // تحميل صورة من IndexedDB وعرضها في عنصر img
-        async function loadImageToElement(imgElement, imageId, placeholderSrc = '') {
-            if (!imageId) {
-                if (placeholderSrc) imgElement.src = placeholderSrc;
-                else imgElement.style.display = 'none';
-                return;
-            }
-            try {
-                const data = await ImageStore.getImage(imageId);
-                if (data) {
-                    imgElement.src = data;
-                    imgElement.style.display = 'block';
-                } else {
-                    imgElement.style.display = 'none';
-                }
-            } catch(e) {
-                console.error('فشل تحميل الصورة:', e);
-                imgElement.style.display = 'none';
-            }
-        }
-
-        // دالة مساعدة لإنشاء عنصر صورة مع تحميل غير متزامن
-        function createProductImageElement(product, className = 'product-table-img') {
-            const img = document.createElement('img');
-            img.className = className;
-            img.alt = product.name;
-            img.style.display = 'none';
-            img.dataset.imageId = product.imageId || '';
-            if (product.imageId) {
-                loadImageToElement(img, product.imageId);
-            } else {
-                // عرض placeholder
-                const placeholder = document.createElement('div');
-                placeholder.className = 'product-table-img-placeholder';
-                placeholder.innerHTML = '<i class="fa-solid fa-image"></i>';
-                return placeholder;
-            }
-            return img;
-        }
-
-        // دالة مساعدة للحصول على صورة لعرضها في الجدول
-        function getProductImageHTML(product) {
-            if (product.imageId) {
-                return `<img src="" class="product-table-img" data-image-id="${product.imageId}" alt="${product.name}" style="display:none;">`;
-            } else {
-                return `<div class="product-table-img-placeholder"><i class="fa-solid fa-image"></i></div>`;
-            }
-        }
-
-        // بعد تحميل الجدول، نقوم بتحديث الصور
-        function loadProductImages() {
-            document.querySelectorAll('#products-table img[data-image-id]').forEach(async img => {
-                const id = img.dataset.imageId;
-                if (id) {
-                    try {
-                        const data = await ImageStore.getImage(id);
-                        if (data) {
-                            img.src = data;
-                            img.style.display = 'block';
-                        } else {
-                            img.style.display = 'none';
-                        }
-                    } catch(e) {
-                        img.style.display = 'none';
+        function handleImageFile(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const dataUrl = e.target.result;
+                    if (dataUrl.length > 2 * 1024 * 1024) {
+                        showToast('⚠️ الصورة كبيرة جداً، قد تواجه مشكلة في الأداء', 'warning', 4000);
                     }
-                }
-            });
-            document.querySelectorAll('#product-grid img[data-image-id]').forEach(async img => {
-                const id = img.dataset.imageId;
-                if (id) {
-                    try {
-                        const data = await ImageStore.getImage(id);
-                        if (data) {
-                            img.src = data;
-                            img.style.display = 'block';
-                        } else {
-                            img.style.display = 'none';
-                        }
-                    } catch(e) {
-                        img.style.display = 'none';
-                    }
-                }
+                    resolve(dataUrl);
+                };
+                reader.onerror = function() {
+                    showToast('فشل قراءة الصورة', 'error');
+                    resolve('');
+                };
+                reader.readAsDataURL(file);
             });
         }
 
         function renderProducts() {
-            const html = state.products.map(p => `
+            $('#products-table').innerHTML = state.products.map(p => `
                 <tr class="border-b dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                    <td class="p-3" id="product-img-${p.id}">
-                        ${p.imageId ? `<img src="" class="product-table-img" data-image-id="${p.imageId}" alt="${p.name}" style="display:none;">` :
-                                    `<div class="product-table-img-placeholder"><i class="fa-solid fa-image"></i></div>`}
+                    <td class="p-3">
+                        ${p.image && p.image.startsWith('data:image') ? 
+                            `<img src="${p.image}" class="product-table-img" alt="${p.name}">` :
+                            `<div class="product-table-img-placeholder"><i class="fa-solid fa-image"></i></div>`}
                     </td>
                     <td class="p-3 font-bold">${p.name}</td>
                     <td class="p-3 font-mono text-xs">${p.ref}</td>
@@ -1610,46 +1400,27 @@
                     </td>
                 </tr>
             `).join('');
-            $('#products-table').innerHTML = html;
-            // تحميل الصور
-            loadProductImages();
             renderProductGrid();
         }
 
         function renderProductGrid(filter = '') {
             const list = state.products.filter(p => p.name.includes(filter) || p.ref.includes(filter));
-            const html = list.map(p => `
+            $('#product-grid').innerHTML = list.map(p => `
                 <div class="product-grid-card" onclick="addItemById(${p.id})">
                     <button class="add-btn" onclick="event.stopPropagation(); addItemById(${p.id})" aria-label="إضافة المنتج">+</button>
-                    ${p.imageId ? `<img src="" data-image-id="${p.imageId}" alt="${p.name}" style="display:none;">` :
-                                `<div class="w-16 h-16 rounded-xl bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-400"><i class="fa-solid fa-image text-2xl"></i></div>`}
+                    ${p.image && p.image.startsWith('data:image') ? 
+                        `<img src="${p.image}" alt="${p.name}">` :
+                        `<div class="w-16 h-16 rounded-xl bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-400"><i class="fa-solid fa-image text-2xl"></i></div>`}
                     <div class="product-name">${p.name}</div>
                     <div class="product-price">${money(p.price)}</div>
                     <div class="text-xs text-slate-500">${p.ref}</div>
                 </div>
             `).join('');
-            $('#product-grid').innerHTML = html;
-            // تحميل الصور
-            document.querySelectorAll('#product-grid img[data-image-id]').forEach(async img => {
-                const id = img.dataset.imageId;
-                if (id) {
-                    try {
-                        const data = await ImageStore.getImage(id);
-                        if (data) {
-                            img.src = data;
-                            img.style.display = 'block';
-                        } else {
-                            img.style.display = 'none';
-                        }
-                    } catch(e) {
-                        img.style.display = 'none';
-                    }
-                }
-            });
         }
 
         $('#btn-add-product').onclick = () => openProduct();
 
+        // ===== زر تحديث القائمة =====
         $('#btn-refresh-products').onclick = function() {
             saveState();
             renderProducts();
@@ -1661,16 +1432,7 @@
             pendingAddToInvoice = addToInvoice;
             $('#modal-title').textContent = p ? 'تعديل منتج' : (ref ? 'إضافة منتج جديد من المسح' : 'منتج جديد');
             const refValue = p?.ref || ref || '';
-            const imageId = p?.imageId || '';
-            let imageSrc = '';
-            if (imageId) {
-                ImageStore.getImage(imageId).then(data => {
-                    if (data) {
-                        document.getElementById('p-image-preview-img').src = data;
-                        document.getElementById('p-image-preview').classList.remove('hidden');
-                    }
-                }).catch(() => {});
-            }
+            const imageSrc = p?.image || '';
             $('#modal-body').innerHTML = `
                 <div class="grid sm:grid-cols-2 gap-3">
                     <div class="sm:col-span-2"><label class="text-xs">اسم المنتج</label><input id="p-name" value="${p?.name||''}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"></div>
@@ -1682,8 +1444,8 @@
                     <div class="sm:col-span-2">
                         <label class="text-xs">صورة المنتج</label>
                         <input id="p-image" type="file" accept="image/*" class="w-full text-sm">
-                        <div id="p-image-preview" class="mt-2 ${imageId ? '' : 'hidden'}">
-                            <img src="" class="w-20 h-20 rounded-xl object-cover border border-slate-200 dark:border-slate-700" id="p-image-preview-img">
+                        <div id="p-image-preview" class="mt-2 ${imageSrc ? '' : 'hidden'}">
+                            <img src="${imageSrc}" class="w-20 h-20 rounded-xl object-cover border border-slate-200 dark:border-slate-700" id="p-image-preview-img">
                         </div>
                     </div>
                     <div class="sm:col-span-2 flex gap-2 pt-2">
@@ -1692,15 +1454,6 @@
                     </div>
                 </div>
             `;
-            // عرض الصورة الموجودة
-            if (imageId) {
-                ImageStore.getImage(imageId).then(data => {
-                    if (data) {
-                        document.getElementById('p-image-preview-img').src = data;
-                        document.getElementById('p-image-preview').classList.remove('hidden');
-                    }
-                }).catch(() => {});
-            }
             const fileInput = document.getElementById('p-image');
             const preview = document.getElementById('p-image-preview');
             const previewImg = document.getElementById('p-image-preview-img');
@@ -1709,29 +1462,18 @@
                     const file = e.target.files[0];
                     if (file) {
                         try {
-                            // قراءة الملف كـ DataURL
-                            const reader = new FileReader();
-                            reader.onload = function(ev) {
-                                previewImg.src = ev.target.result;
-                                preview.classList.remove('hidden');
-                                // سنقوم بحفظ الصورة لاحقًا في saveProduct
-                                // نخزن البيانات مؤقتاً
-                                fileInput.dataset.imageData = ev.target.result;
-                            };
-                            reader.readAsDataURL(file);
+                            const dataUrl = await handleImageFile(file);
+                            previewImg.src = dataUrl;
+                            preview.classList.remove('hidden');
+                            fileInput.dataset.imageData = dataUrl;
                         } catch(err) {
                             console.error('خطأ في تحميل الصورة:', err);
                             showToast('فشل تحميل الصورة', 'error');
                         }
                     } else {
-                        if (imageId) {
-                            // نعود للصورة القديمة
-                            ImageStore.getImage(imageId).then(data => {
-                                if (data) {
-                                    previewImg.src = data;
-                                    preview.classList.remove('hidden');
-                                }
-                            }).catch(() => {});
+                        if (imageSrc) {
+                            previewImg.src = imageSrc;
+                            preview.classList.remove('hidden');
                         } else {
                             preview.classList.add('hidden');
                         }
@@ -1741,78 +1483,59 @@
             showModal(true);
         }
 
-        async function saveProduct(id) {
+        function saveProduct(id) {
             try {
                 const name = $('#p-name').value.trim();
                 if (!name) return showToast('ادخل الاسم', 'error');
-
+                
                 const fileInput = document.getElementById('p-image');
-                let imageId = null;
-                // إذا تم تحميل صورة جديدة
-                if (fileInput && fileInput.files && fileInput.files.length > 0) {
-                    const file = fileInput.files[0];
-                    const reader = new FileReader();
-                    const dataUrl = await new Promise((resolve, reject) => {
-                        reader.onload = e => resolve(e.target.result);
-                        reader.onerror = reject;
-                        reader.readAsDataURL(file);
-                    });
-                    // حفظ في IndexedDB
-                    const newId = id ? `product_${id}` : `product_${Date.now()}`;
-                    await ImageStore.saveImage(newId, dataUrl);
-                    imageId = newId;
-                } else if (id) {
-                    // الاحتفاظ بالصورة القديمة
+                let imageData = '';
+                if (fileInput && fileInput.dataset && fileInput.dataset.imageData) {
+                    imageData = fileInput.dataset.imageData;
+                } else {
                     const existing = state.products.find(p => p.id === id);
-                    imageId = existing ? existing.imageId : null;
+                    imageData = existing ? existing.image || '' : '';
                 }
-
-                const ref = $('#p-ref').value.trim() || 'REF' + Date.now();
-                const buy = +$('#p-buy').value || 0;
-                const price = +$('#p-price').value || 0;
-                const tva = +$('#p-tva').value || state.company.tva;
-                const stock = +$('#p-stock').value || 0;
-                const o = { id: id || Date.now(), name, ref, buy, price, tva, stock, imageId: imageId || '' };
-                let isNew = false;
-                updateState(s => {
-                    if (id) {
-                        const idx = s.products.findIndex(p => p.id === id);
-                        if (idx > -1) {
-                            // الحفاظ على imageId القديم إذا لم يتم تغيير الصورة
-                            if (!imageId && s.products[idx].imageId) {
-                                o.imageId = s.products[idx].imageId;
-                            }
-                            s.products[idx] = o;
-                        }
-                    } else {
-                        s.products.unshift(o);
-                        isNew = true;
-                    }
-                });
-                showModal(false);
-                renderProducts();
-                showToast('تم حفظ المنتج', 'success');
-
-                if (pendingAddToInvoice && isNew) {
-                    addItemById(o.id);
-                    pendingAddToInvoice = false;
-                    go('pos');
-                }
-                checkLowStock();
+                actuallySaveProduct(id, name, imageData);
             } catch(err) {
                 console.error('خطأ في حفظ المنتج:', err);
                 showToast('حدث خطأ أثناء حفظ المنتج', 'error');
             }
         }
 
+        function actuallySaveProduct(id, name, imageData) {
+            const ref = $('#p-ref').value.trim() || 'REF' + Date.now();
+            const buy = +$('#p-buy').value || 0;
+            const price = +$('#p-price').value || 0;
+            const tva = +$('#p-tva').value || state.company.tva;
+            const stock = +$('#p-stock').value || 0;
+            const o = { id: id || Date.now(), name, ref, buy, price, tva, stock, image: imageData };
+            let isNew = false;
+            updateState(s => {
+                if (id) {
+                    const idx = s.products.findIndex(p => p.id === id);
+                    if (idx > -1) s.products[idx] = o;
+                } else {
+                    s.products.unshift(o);
+                    isNew = true;
+                }
+            });
+            showModal(false);
+            renderProducts();
+            showToast('تم حفظ المنتج', 'success');
+
+            if (pendingAddToInvoice && isNew) {
+                addItemById(o.id);
+                pendingAddToInvoice = false;
+                go('pos');
+            }
+            checkLowStock();
+        }
+
         function editProduct(id) { openProduct(state.products.find(p => p.id === id)); }
 
         function delProduct(id) {
             if (confirm('حذف المنتج نهائياً؟')) {
-                const p = state.products.find(pr => pr.id === id);
-                if (p && p.imageId) {
-                    ImageStore.deleteImage(p.imageId).catch(() => {});
-                }
                 Sound.delete();
                 updateState(s => { s.products = s.products.filter(p => p.id !== id); });
                 renderProducts();
@@ -1822,7 +1545,7 @@
         }
 
         // ============================================================
-        //  CUSTOMERS (كما هو)
+        //  CUSTOMERS
         // ============================================================
         function renderCustomers() {
             $('#customers-table').innerHTML = state.customers.map(c => `<tr class="border-b dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50">
@@ -1876,7 +1599,7 @@
         }
 
         // ============================================================
-        //  INVOICES LIST + EDIT BUTTON (كما هو)
+        //  INVOICES LIST + EDIT BUTTON
         // ============================================================
         function renderInvoices() {
             const f = $('#filter-status').value;
@@ -1949,7 +1672,7 @@
         }
 
         // ============================================================
-        //  POS / CREATE INVOICE (كما هو مع تحسين بسيط)
+        //  POS / CREATE INVOICE
         // ============================================================
         function initInvoice(editData = null) {
             if (editData) {
@@ -2159,7 +1882,7 @@
         }
 
         // ============================================================
-        //  SAVE INVOICE (كما هو)
+        //  SAVE INVOICE
         // ============================================================
         $('#save-invoice').onclick = () => {
             try {
@@ -2237,22 +1960,25 @@
         };
 
         // ============================================================
-        //  PRINT FULL INVOICE (كما هو)
+        //  PRINT FULL INVOICE
         // ============================================================
         $('#print-invoice').onclick = () => {
             const inv = collectCurrentInvoice();
             if (inv) { Sound.print(); buildPrint(inv, true); window.print(); }
         };
 
+        // ============================================================
+        //  PRINT PURCHASE LIST
+        // ============================================================
         $('#print-purchase-list').onclick = () => {
             const inv = collectCurrentInvoice();
             if (inv) { Sound.print(); buildPrint(inv, false); window.print(); }
         };
 
         // ============================================================
-        //  PRINT BUILDER (محسن للصور)
+        //  PRINT BUILDER
         // ============================================================
-        async function buildPrint(inv, showTotals = true) {
+        function buildPrint(inv, showTotals = true) {
             const comp = inv.company || state.company;
             const isPriceList = !showTotals;
             const title = isPriceList ? 'قائمة الشراء' : inv.type || 'فاتورة';
@@ -2266,23 +1992,13 @@
 
             const totals = showTotals ? inv.totals : null;
 
-            // تحميل الصور إذا كانت موجودة
-            let logoData = null;
-            let stampData = null;
-            if (comp.logoId) {
-                try { logoData = await ImageStore.getImage(comp.logoId); } catch(e) {}
-            }
-            if (comp.stampId) {
-                try { stampData = await ImageStore.getImage(comp.stampId); } catch(e) {}
-            }
-
             $('#print-area').classList.remove('hidden');
             
             let html = `
             <div id="invoice-print" dir="rtl" style="font-family:'Cairo',sans-serif;background:white;color:black;padding:0;">
                 <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #000;padding-bottom:12px;margin-bottom:18px;">
                     <div style="display:flex;gap:12px;">
-                        ${logoData ? `<img src="${logoData}" style="height:70px;width:70px;object-fit:contain;border:1px solid #ddd;border-radius:6px;padding:4px;background:white;">` :
+                        ${comp.logo ? `<img src="${comp.logo}" style="height:70px;width:70px;object-fit:contain;border:1px solid #ddd;border-radius:6px;padding:4px;background:white;">` :
                         `<div style="width:70px;height:70px;background:#000;color:white;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;border-radius:8px;">F</div>`}
                         <div>
                             <div class="print-company-name" style="font-size:28px;font-weight:900;color:#000;letter-spacing:-0.5px;">${comp.name}</div>
@@ -2384,7 +2100,7 @@
                 <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:25px;border-top:1px solid #000;padding-top:14px;">
                     <div style="font-size:12px;color:#000;max-width:60%;">${comp.footer || ''}</div>
                     <div style="text-align:center;">
-                        ${stampData ? `<img src="${stampData}" style="max-height:70px;object-fit:contain;display:block;margin:0 auto;border:1px solid #ddd;border-radius:4px;padding:4px;background:white;">` :
+                        ${comp.stamp ? `<img src="${comp.stamp}" style="max-height:70px;object-fit:contain;display:block;margin:0 auto;border:1px solid #ddd;border-radius:4px;padding:4px;background:white;">` :
                         `<div style="border:2px dashed #000;border-radius:8px;padding:12px 20px;min-width:100px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#000;">الختم والتوقيع</div>`}
                         <div style="font-size:11px;font-weight:600;color:#000;margin-top:4px;">التوقيع</div>
                     </div>
@@ -2431,7 +2147,7 @@
         }
 
         // ============================================================
-        //  SETTINGS (محسن للصور)
+        //  SETTINGS
         // ============================================================
         function loadSettings() {
             const c = state.company;
@@ -2440,21 +2156,8 @@
             $('#set-nis').value = c.nis||''; $('#set-rc').value = c.rc||''; $('#set-ai').value = c.ai||'';
             $('#set-rib').value = c.rib||''; $('#set-tva').value = c.tva||19; $('#set-timbre').value = c.timbre||0;
             $('#set-currency').value = c.currency||'دج'; $('#set-footer').value = c.footer||'';
-            // تحميل الشعار والختم
-            if (c.logoId) {
-                ImageStore.getImage(c.logoId).then(data => {
-                    if (data) $('#logo-preview').src = data;
-                }).catch(() => {});
-            } else {
-                $('#logo-preview').src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>';
-            }
-            if (c.stampId) {
-                ImageStore.getImage(c.stampId).then(data => {
-                    if (data) $('#stamp-preview').src = data;
-                }).catch(() => {});
-            } else {
-                $('#stamp-preview').src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>';
-            }
+            $('#logo-preview').src = c.logo || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>';
+            $('#stamp-preview').src = c.stamp || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>';
             $('#toggle-dark').checked = document.documentElement.classList.contains('dark');
 
             const s = state.notifications.settings;
@@ -2494,37 +2197,17 @@
             checkOverdueInvoices();
         };
 
-        // معالجة رفع الشعار والختم
-        async function handleImageUpload(file, id, previewElement) {
-            if (!file) return;
-            try {
-                const reader = new FileReader();
-                const dataUrl = await new Promise((resolve, reject) => {
-                    reader.onload = e => resolve(e.target.result);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(file);
-                });
-                await ImageStore.saveImage(id, dataUrl);
-                previewElement.src = dataUrl;
-                // تحديث state
-                updateState(s => {
-                    if (id === 'company_logo') s.company.logoId = id;
-                    else if (id === 'company_stamp') s.company.stampId = id;
-                });
-                showToast('تم حفظ الصورة', 'success');
-            } catch(err) {
-                console.error(err);
-                showToast('فشل حفظ الصورة', 'error');
-            }
-        }
-
         $('#logo-input').onchange = function(e) {
-            const f = e.target.files[0];
-            if (f) handleImageUpload(f, 'company_logo', $('#logo-preview'));
+            const f = e.target.files[0]; if (!f) return;
+            const r = new FileReader();
+            r.onload = function() { updateState(s => { s.company.logo = r.result; }); $('#logo-preview').src = r.result; };
+            r.readAsDataURL(f);
         };
         $('#stamp-input').onchange = function(e) {
-            const f = e.target.files[0];
-            if (f) handleImageUpload(f, 'company_stamp', $('#stamp-preview'));
+            const f = e.target.files[0]; if (!f) return;
+            const r = new FileReader();
+            r.onload = function() { updateState(s => { s.company.stamp = r.result; }); $('#stamp-preview').src = r.result; };
+            r.readAsDataURL(f);
         };
 
         $('#toggle-dark').onchange = function(e) {
@@ -2535,138 +2218,46 @@
         };
         if (localStorage.getItem('dark') === '1') { document.documentElement.classList.add('dark'); $('#toggle-dark').checked = true; $('#toggle-dark').nextElementSibling.querySelector('.dot').style.right = '1.5rem'; }
 
-        $('#reset-data').onclick = () => {
-            if (confirm('سيتم حذف كل البيانات نهائياً!')) {
-                localStorage.removeItem(storeKey);
-                localStorage.removeItem('invoice_draft');
-                ImageStore.clearAll().catch(() => {});
-                location.reload();
-            }
+        $('#reset-data').onclick = () => { if (confirm('سيتم حذف كل البيانات نهائياً!')) { localStorage.removeItem(storeKey); localStorage.removeItem('invoice_draft'); location.reload(); } };
+
+        // ============================================================
+        //  EXPORT / IMPORT
+        // ============================================================
+        $('#btn-export').onclick = () => {
+            const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'fawtara-backup.json';
+            a.click();
+            showToast('تم تصدير البيانات', 'success');
+            notifySystem('✅ تم تصدير نسخة احتياطية للبيانات');
+        };
+        $('#import-file').onchange = function(e) {
+            const f = e.target.files[0]; if (!f) return;
+            const r = new FileReader();
+            r.onload = function() {
+                try {
+                    const data = JSON.parse(r.result);
+                    state = data;
+                    saveState();
+                    localStorage.removeItem('invoice_draft');
+                    showToast('تم استيراد البيانات بنجاح، سيتم تحديث الصفحة', 'success');
+                    notifySystem('✅ تم استيراد بيانات من نسخة احتياطية');
+                    setTimeout(() => location.reload(), 1000);
+                } catch(err) { showToast('ملف غير صالح', 'error'); }
+            };
+            r.readAsText(f);
         };
 
         // ============================================================
-        //  EXPORT / IMPORT (محسن للصور)
-        // ============================================================
-        $('#btn-export').onclick = async () => {
-            try {
-                showToast('جاري تحضير النسخة الاحتياطية...', 'info', 2000);
-                // الحصول على جميع الصور من IndexedDB
-                const images = await ImageStore.getAllImages();
-                const imageMap = {};
-                images.forEach(img => { imageMap[img.id] = img.data; });
-
-                // إنشاء نسخة من state مع تضمين الصور كـ base64
-                const exportData = JSON.parse(JSON.stringify(state));
-                // تضمين الصور في المنتجات
-                exportData.products.forEach(p => {
-                    if (p.imageId && imageMap[p.imageId]) {
-                        p.image = imageMap[p.imageId];
-                        // الاحتفاظ بـ imageId للاستيراد
-                    }
-                });
-                // تضمين شعار وختم الشركة
-                if (exportData.company.logoId && imageMap[exportData.company.logoId]) {
-                    exportData.company.logo = imageMap[exportData.company.logoId];
-                }
-                if (exportData.company.stampId && imageMap[exportData.company.stampId]) {
-                    exportData.company.stamp = imageMap[exportData.company.stampId];
-                }
-
-                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-                const a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                const now = new Date();
-                const dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
-                a.download = `fawtara-backup-${dateStr}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(a.href);
-                showToast('✅ تم تصدير النسخة الاحتياطية الكاملة مع الصور', 'success');
-                notifySystem('✅ تم تصدير نسخة احتياطية كاملة');
-            } catch(err) {
-                console.error(err);
-                showToast('فشل تصدير البيانات', 'error');
-            }
-        };
-
-        $('#import-file').onchange = async function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            try {
-                showToast('جاري استيراد البيانات...', 'info', 2000);
-                const text = await file.text();
-                const importedData = JSON.parse(text);
-                if (!importedData.company || !Array.isArray(importedData.products) || !Array.isArray(importedData.customers) || !Array.isArray(importedData.invoices)) {
-                    showToast('⚠️ الملف غير صالح: بيانات غير مكتملة', 'error');
-                    return;
-                }
-
-                // استيراد الصور إلى IndexedDB
-                const imagePromises = [];
-                // صور المنتجات
-                importedData.products.forEach(p => {
-                    if (p.image && p.image.startsWith('data:image')) {
-                        const id = p.imageId || `product_${p.id}`;
-                        imagePromises.push(ImageStore.saveImage(id, p.image).then(() => {
-                            // تحديث المنتج في state الجديد لاستخدام imageId
-                            p.imageId = id;
-                            delete p.image;
-                        }).catch(() => {}));
-                    } else if (p.imageId) {
-                        // نحاول نقل الصورة إذا كانت موجودة في importedData (قد تكون معطلة)
-                    }
-                });
-                // شعار الشركة
-                if (importedData.company.logo && importedData.company.logo.startsWith('data:image')) {
-                    const id = importedData.company.logoId || 'company_logo';
-                    imagePromises.push(ImageStore.saveImage(id, importedData.company.logo).then(() => {
-                        importedData.company.logoId = id;
-                        delete importedData.company.logo;
-                    }).catch(() => {}));
-                }
-                // ختم الشركة
-                if (importedData.company.stamp && importedData.company.stamp.startsWith('data:image')) {
-                    const id = importedData.company.stampId || 'company_stamp';
-                    imagePromises.push(ImageStore.saveImage(id, importedData.company.stamp).then(() => {
-                        importedData.company.stampId = id;
-                        delete importedData.company.stamp;
-                    }).catch(() => {}));
-                }
-
-                await Promise.all(imagePromises);
-
-                // استبدال الحالة الحالية
-                state = importedData;
-                if (!state.notifications) {
-                    state.notifications = { items: [], settings: { lowStockThreshold: 5, overdueDays: 30, enableLowStock: true, enableOverdue: true, enableNewInvoice: true, enableSystem: true } };
-                }
-                if (!state.notifications.settings) {
-                    state.notifications.settings = { lowStockThreshold: 5, overdueDays: 30, enableLowStock: true, enableOverdue: true, enableNewInvoice: true, enableSystem: true };
-                }
-                saveState();
-                localStorage.removeItem('invoice_draft');
-                showToast('✅ تم استيراد البيانات بنجاح! سيتم تحديث الصفحة...', 'success');
-                notifySystem('✅ تم استيراد نسخة احتياطية كاملة');
-                setTimeout(() => {
-                    location.reload();
-                }, 1500);
-            } catch(err) {
-                console.error('خطأ في الاستيراد:', err);
-                showToast('❌ فشل استيراد الملف: تأكد من أنه ملف JSON صحيح', 'error');
-            }
-            e.target.value = '';
-        };
-
-        // ============================================================
-        //  MODAL (كما هو)
+        //  MODAL
         // ============================================================
         function showModal(show) { $('#modal').classList.toggle('hidden', !show); }
         $$('#modal [data-close]').forEach(el => el.addEventListener('click', () => showModal(false)));
         document.addEventListener('click', e => { if (e.target.matches('[data-close]')) showModal(false); });
 
         // ============================================================
-        //  SCANNER (كما هو)
+        //  SCANNER
         // ============================================================
         let html5Qr = null;
         let currentCameraId = null;
@@ -2764,7 +2355,7 @@
         };
 
         // ============================================================
-        //  GLOBAL SEARCH (كما هو)
+        //  GLOBAL SEARCH
         // ============================================================
         $('#global-search').addEventListener('input', function(e) {
             const q = e.target.value.toLowerCase();
@@ -2783,15 +2374,9 @@
         }, 300000);
 
         // ============================================================
-        //  INIT (مع ترحيل الصور)
+        //  INIT
         // ============================================================
-        async function init() {
-            // ترحيل الصور القديمة من localStorage إلى IndexedDB
-            try {
-                await ImageStore.migrateImagesFromState(state);
-            } catch(e) { console.warn('ترحيل الصور:', e); }
-
-            // تحميل الصور لعرضها في الواجهة
+        function init() {
             renderDashboard();
             renderProducts();
             renderCustomers();
