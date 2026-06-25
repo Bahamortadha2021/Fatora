@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title> نظام الفوترة </title>
+    <title>فَوْتَرَة كامل - نظام الفوترة الجزائري (حفظ صور محسّن)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,7 +14,6 @@
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        /* جميع الأنماط السابقة (مختصرة للاختصار، سيتم تضمينها كاملة في الكود النهائي) */
         * { font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
@@ -125,7 +124,14 @@
         }
         .dark .product-grid-card { background: #1e293b; border-color: #334155; }
         .product-grid-card:hover { transform: translateY(-4px); border-color: #0ea5e9; box-shadow: 0 8px 25px rgba(14,165,233,0.15); }
-        .product-grid-card img { width: 64px; height: 64px; object-fit: cover; border-radius: 12px; border: 1px solid #e2e8f0; background: white; }
+        .product-grid-card img {
+            width: 64px;
+            height: 64px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background: white;
+        }
         .dark .product-grid-card img { border-color: #475569; background: #0f172a; }
         .product-grid-card .product-name {
             font-weight: 800;
@@ -453,6 +459,40 @@
             font-weight: 700;
         }
         .dark .dashboard-invoice-card .amount { color: #38bdf8; }
+
+        /* تنسيق معاينة الصورة في النموذج */
+        .image-preview-container {
+            position: relative;
+            display: inline-block;
+        }
+        .image-preview-container img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            background: white;
+        }
+        .image-preview-container .remove-image {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ef4444;
+            color: white;
+            border: none;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .dark .image-preview-container img {
+            border-color: #475569;
+            background: #0f172a;
+        }
     </style>
 </head>
 <body class="bg-[#f7f8fb] dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors">
@@ -468,7 +508,7 @@
                 </div>
                 <div>
                     <h1 class="font-extrabold text-lg leading-none">فَوْتَرَة</h1>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400">الإصدار الجزائري v5.1</p>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">الإصدار الجزائري v5.2</p>
                 </div>
             </div>
             <nav class="p-3 space-y-1.5 overflow-y-auto">
@@ -879,7 +919,7 @@
 
     <script>
         // ============================================================
-        //  SOUND MANAGER
+        //  SOUND MANAGER (كما هو)
         // ============================================================
         const Sound = (function() {
             let audioCtx = null;
@@ -1015,7 +1055,7 @@
         }
 
         // ============================================================
-        //  NOTIFICATIONS SYSTEM
+        //  NOTIFICATIONS SYSTEM (مختصر للاختصار)
         // ============================================================
         function addNotification(type, message, data = null) {
             const settings = state.notifications.settings;
@@ -1023,182 +1063,69 @@
             if (type === 'overdue' && !settings.enableOverdue) return;
             if (type === 'new_invoice' && !settings.enableNewInvoice) return;
             if (type === 'system' && !settings.enableSystem) return;
-
             const existing = state.notifications.items.find(n => n.type === type && n.message === message && n.read === false);
-            if (existing) {
-                existing.date = new Date().toISOString();
-                saveState();
-                updateNotifBadge();
-                return;
-            }
-
-            const notif = {
-                id: uid(),
-                type: type,
-                message: message,
-                date: new Date().toISOString(),
-                read: false,
-                data: data || null
-            };
+            if (existing) { existing.date = new Date().toISOString(); saveState(); updateNotifBadge(); return; }
+            const notif = { id: uid(), type, message, date: new Date().toISOString(), read: false, data: data || null };
             state.notifications.items.unshift(notif);
-            if (state.notifications.items.length > 100) {
-                state.notifications.items = state.notifications.items.slice(0, 100);
-            }
+            if (state.notifications.items.length > 100) state.notifications.items = state.notifications.items.slice(0, 100);
             saveState();
             updateNotifBadge();
             showToast('🔔 ' + message, 'notification', 3000);
             return notif;
         }
 
-        function getUnreadCount() {
-            return state.notifications.items.filter(n => !n.read).length;
-        }
-
+        function getUnreadCount() { return state.notifications.items.filter(n => !n.read).length; }
         function updateNotifBadge() {
             const badge = $('#notif-badge');
             const count = getUnreadCount();
-            if (count > 0) {
-                badge.textContent = count > 99 ? '99+' : count;
-                badge.classList.remove('hidden');
-                setTimeout(() => { badge.style.animation = 'in 0.3s ease-out'; }, 10);
-            } else {
-                badge.classList.add('hidden');
-            }
-            if ($('#notif-panel').classList.contains('open')) {
-                renderNotifList();
-            }
+            if (count > 0) { badge.textContent = count > 99 ? '99+' : count; badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); }
+            if ($('#notif-panel').classList.contains('open')) renderNotifList();
         }
-
-        function toggleNotifPanel() {
-            const panel = $('#notif-panel');
-            panel.classList.toggle('open');
-            if (panel.classList.contains('open')) {
-                renderNotifList();
-            }
-        }
-
+        function toggleNotifPanel() { $('#notif-panel').classList.toggle('open'); if ($('#notif-panel').classList.contains('open')) renderNotifList(); }
         function renderNotifList(filter = 'all') {
             const list = $('#notif-list');
             let items = state.notifications.items;
-            if (filter !== 'all') {
-                items = items.filter(n => n.type === filter);
-            }
+            if (filter !== 'all') items = items.filter(n => n.type === filter);
             if (items.length === 0) {
-                list.innerHTML = `
-                    <div class="notif-empty">
-                        <i class="fa-regular fa-bell-slash"></i>
-                        لا توجد إشعارات
-                    </div>
-                `;
+                list.innerHTML = `<div class="notif-empty"><i class="fa-regular fa-bell-slash"></i>لا توجد إشعارات</div>`;
                 return;
             }
             list.innerHTML = items.map(n => `
                 <div class="notif-item ${n.read ? '' : 'unread'}" data-id="${n.id}">
-                    <div class="icon ${n.type}">
-                        ${n.type === 'low_stock' ? '⚠️' :
-                          n.type === 'overdue' ? '⏰' :
-                          n.type === 'new_invoice' ? '📄' : '⚙️'}
-                    </div>
-                    <div class="content">
-                        <div class="msg">${n.message}</div>
-                        <div class="time">${timeAgo(n.date)}</div>
-                    </div>
-                    ${!n.read ? `<button class="mark-read" onclick="markNotifRead('${n.id}')" aria-label="تحديد كمقروء"><i class="fa-regular fa-circle-check"></i></button>` :
-                              `<button class="mark-read" onclick="deleteNotif('${n.id}')" aria-label="حذف" style="color:#94a3b8;"><i class="fa-regular fa-trash-can"></i></button>`}
+                    <div class="icon ${n.type}">${n.type === 'low_stock' ? '⚠️' : n.type === 'overdue' ? '⏰' : n.type === 'new_invoice' ? '📄' : '⚙️'}</div>
+                    <div class="content"><div class="msg">${n.message}</div><div class="time">${timeAgo(n.date)}</div></div>
+                    ${!n.read ? `<button class="mark-read" onclick="markNotifRead('${n.id}')"><i class="fa-regular fa-circle-check"></i></button>` : `<button class="mark-read" onclick="deleteNotif('${n.id}')"><i class="fa-regular fa-trash-can"></i></button>`}
                 </div>
             `).join('');
         }
-
         function timeAgo(dateStr) {
             const diff = Date.now() - new Date(dateStr).getTime();
-            const minutes = Math.floor(diff / 60000);
-            const hours = Math.floor(diff / 3600000);
-            const days = Math.floor(diff / 86400000);
+            const minutes = Math.floor(diff / 60000), hours = Math.floor(diff / 3600000), days = Math.floor(diff / 86400000);
             if (minutes < 1) return 'الآن';
-            if (minutes < 60) return minutes + ' دقيقة' + (minutes > 1 ? '' : '');
-            if (hours < 24) return hours + ' ساعة' + (hours > 1 ? '' : '');
-            return days + ' يوم' + (days > 1 ? '' : '');
+            if (minutes < 60) return minutes + ' دقيقة';
+            if (hours < 24) return hours + ' ساعة';
+            return days + ' يوم';
         }
-
-        function markNotifRead(id) {
-            const notif = state.notifications.items.find(n => n.id === id);
-            if (notif) {
-                notif.read = true;
-                saveState();
-                renderNotifList(document.querySelector('.notif-filters .active')?.dataset?.filter || 'all');
-                updateNotifBadge();
-            }
-        }
-
-        function markAllNotifsRead() {
-            state.notifications.items.forEach(n => n.read = true);
-            saveState();
-            renderNotifList(document.querySelector('.notif-filters .active')?.dataset?.filter || 'all');
-            updateNotifBadge();
-            showToast('تم تحديد جميع الإشعارات كمقروءة', 'success');
-        }
-
-        function clearAllNotifs() {
-            if (state.notifications.items.length === 0) return;
-            if (confirm('هل تريد مسح جميع الإشعارات نهائياً؟')) {
-                state.notifications.items = [];
-                saveState();
-                renderNotifList('all');
-                updateNotifBadge();
-                showToast('تم مسح جميع الإشعارات', 'success');
-            }
-        }
-
-        function deleteNotif(id) {
-            state.notifications.items = state.notifications.items.filter(n => n.id !== id);
-            saveState();
-            renderNotifList(document.querySelector('.notif-filters .active')?.dataset?.filter || 'all');
-            updateNotifBadge();
-        }
-
-        function filterNotifs(type) {
-            document.querySelectorAll('.notif-filters button').forEach(b => b.classList.remove('active'));
-            const btn = document.querySelector(`.notif-filters button[data-filter="${type}"]`);
-            if (btn) btn.classList.add('active');
-            renderNotifList(type);
-        }
-
+        function markNotifRead(id) { const n = state.notifications.items.find(x => x.id === id); if (n) { n.read = true; saveState(); renderNotifList(); updateNotifBadge(); } }
+        function markAllNotifsRead() { state.notifications.items.forEach(n => n.read = true); saveState(); renderNotifList(); updateNotifBadge(); showToast('تم تحديد جميع الإشعارات كمقروءة', 'success'); }
+        function clearAllNotifs() { if (confirm('مسح جميع الإشعارات؟')) { state.notifications.items = []; saveState(); renderNotifList(); updateNotifBadge(); showToast('تم مسح الإشعارات', 'success'); } }
+        function deleteNotif(id) { state.notifications.items = state.notifications.items.filter(n => n.id !== id); saveState(); renderNotifList(); updateNotifBadge(); }
+        function filterNotifs(type) { document.querySelectorAll('.notif-filters button').forEach(b => b.classList.remove('active')); const btn = document.querySelector(`.notif-filters button[data-filter="${type}"]`); if (btn) btn.classList.add('active'); renderNotifList(type); }
         function checkLowStock() {
             const threshold = state.notifications.settings.lowStockThreshold || 5;
             const lowItems = state.products.filter(p => p.stock <= threshold && p.stock > 0);
             const outItems = state.products.filter(p => p.stock === 0);
-            if (lowItems.length > 0) {
-                const names = lowItems.map(p => p.name).join('، ');
-                addNotification('low_stock', `⚠️ مخزون منخفض: ${names} (أقل من ${threshold})`, { products: lowItems });
-            }
-            if (outItems.length > 0) {
-                const names = outItems.map(p => p.name).join('، ');
-                addNotification('low_stock', `🚫 نفد المخزون: ${names}`, { products: outItems });
-            }
+            if (lowItems.length > 0) addNotification('low_stock', `⚠️ مخزون منخفض: ${lowItems.map(p=>p.name).join('، ')} (أقل من ${threshold})`);
+            if (outItems.length > 0) addNotification('low_stock', `🚫 نفد المخزون: ${outItems.map(p=>p.name).join('، ')}`);
         }
-
         function checkOverdueInvoices() {
             const days = state.notifications.settings.overdueDays || 30;
             const now = new Date();
-            const overdue = state.invoices.filter(inv => {
-                if (inv.status !== 'غير مدفوعة') return false;
-                const invDate = new Date(inv.date);
-                const diff = Math.floor((now - invDate) / (1000 * 60 * 60 * 24));
-                return diff >= days;
-            });
-            if (overdue.length > 0) {
-                const names = overdue.map(i => i.number + ' (' + i.customer.name + ')').join('، ');
-                addNotification('overdue', `⏰ فواتير متأخرة أكثر من ${days} يوم: ${names}`, { invoices: overdue });
-            }
+            const overdue = state.invoices.filter(inv => inv.status === 'غير مدفوعة' && Math.floor((now - new Date(inv.date)) / (1000*60*60*24)) >= days);
+            if (overdue.length > 0) addNotification('overdue', `⏰ فواتير متأخرة أكثر من ${days} يوم: ${overdue.map(i=>i.number).join('، ')}`);
         }
-
-        function notifyNewInvoice(invoice) {
-            addNotification('new_invoice', `📄 فاتورة جديدة ${invoice.number} - ${invoice.customer.name} بقيمة ${money(invoice.totals.ttc)}`, { invoice: invoice });
-        }
-
-        function notifySystem(message) {
-            addNotification('system', message);
-        }
+        function notifyNewInvoice(invoice) { addNotification('new_invoice', `📄 فاتورة جديدة ${invoice.number} - ${invoice.customer.name} بقيمة ${money(invoice.totals.ttc)}`); }
+        function notifySystem(message) { addNotification('system', message); }
 
         // ============================================================
         //  NAVIGATION
@@ -1220,66 +1147,39 @@
             if (page === 'products') renderProducts();
             if (page === 'customers') renderCustomers();
             if (page === 'invoices') renderInvoices();
-            if (page === 'pos') {
-                if (!editingInvoiceId) {
-                    initInvoice();
-                }
-            }
+            if (page === 'pos') { if (!editingInvoiceId) initInvoice(); }
             if (page === 'settings') loadSettings();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         $('#btn-menu').onclick = () => $('#sidebar').classList.toggle('hidden');
-        $('#btn-new-invoice').onclick = $('#btn-new-invoice-2').onclick = () => {
-            cancelEdit();
-            go('pos');
-        };
+        $('#btn-new-invoice').onclick = $('#btn-new-invoice-2').onclick = () => { cancelEdit(); go('pos'); };
 
         // ============================================================
-        //  EDIT INVOICE FUNCTIONALITY
+        //  EDIT INVOICE
         // ============================================================
         let editingInvoiceId = null;
         let originalInvoiceData = null;
-
         function editInvoice(id) {
             const inv = state.invoices.find(i => i.id === id);
-            if (!inv) {
-                showToast('الفاتورة غير موجودة', 'error');
-                return;
-            }
+            if (!inv) { showToast('الفاتورة غير موجودة', 'error'); return; }
             originalInvoiceData = JSON.parse(JSON.stringify(inv));
             editingInvoiceId = id;
             go('pos');
-            setTimeout(() => {
-                initInvoice(inv);
-            }, 100);
+            setTimeout(() => { initInvoice(inv); }, 100);
         }
-
         function cancelEdit() {
-            editingInvoiceId = null;
-            originalInvoiceData = null;
+            editingInvoiceId = null; originalInvoiceData = null;
             $('#edit-badge').classList.add('hidden');
             $('#btn-cancel-edit').classList.add('hidden');
             $('#pos-title').textContent = 'فاتورة جديدة';
             localStorage.removeItem('invoice_draft');
-            if (state.counters.inv) {
-                $('#inv-number').value = 'FA-' + state.counters.inv;
-            }
-            $('#inv-items').innerHTML = '';
-            addItemRow();
-            calcTotals();
-            renderCustomers();
+            if (state.counters.inv) $('#inv-number').value = 'FA-' + state.counters.inv;
+            $('#inv-items').innerHTML = ''; addItemRow(); calcTotals(); renderCustomers();
         }
-
         function calculateStockDifferences(originalItems, newItems) {
             const diffs = {};
-            originalItems.forEach(it => {
-                const key = it.productId;
-                diffs[key] = (diffs[key] || 0) + it.qty;
-            });
-            newItems.forEach(it => {
-                const key = it.productId;
-                diffs[key] = (diffs[key] || 0) - it.qty;
-            });
+            originalItems.forEach(it => { const key = it.productId; diffs[key] = (diffs[key] || 0) + it.qty; });
+            newItems.forEach(it => { const key = it.productId; diffs[key] = (diffs[key] || 0) - it.qty; });
             return diffs;
         }
 
@@ -1308,27 +1208,14 @@
                 salesChart = new Chart(ctx, {
                     type: 'line',
                     data: { labels, datasets: [{ data, tension: .4, fill: true, borderColor: '#0ea5e9', backgroundColor: 'rgba(14,165,233,.15)' }] },
-                    options: {
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            y: { ticks: { callback: v => v, font: { size: window.innerWidth < 480 ? 8 : 11 } } },
-                            x: { ticks: { font: { size: window.innerWidth < 480 ? 8 : 11 } } }
-                        },
-                        responsive: true,
-                        maintainAspectRatio: false
-                    }
+                    options: { plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => v, font: { size: window.innerWidth < 480 ? 8 : 11 } } }, x: { ticks: { font: { size: window.innerWidth < 480 ? 8 : 11 } } } }, responsive: true, maintainAspectRatio: false }
                 });
             }
 
             const top = {};
             state.invoices.forEach(inv => inv.items.forEach(it => { top[it.name] = (top[it.name] || 0) + Number(it.qty); }));
             const topList = Object.entries(top).sort((a,b) => b[1] - a[1]).slice(0,5);
-            $('#top-products').innerHTML = topList.map(([n,q]) => `
-                <div class="product-item flex items-center justify-between p-2 sm:p-3 rounded-xl bg-slate-50 dark:bg-slate-800">
-                    <span class="text-xs sm:text-sm">${n}</span>
-                    <b class="text-xs sm:text-sm">${q}</b>
-                </div>
-            `).join('') || '<p class="text-slate-500 text-xs sm:text-sm">لا توجد مبيعات بعد</p>';
+            $('#top-products').innerHTML = topList.map(([n,q]) => `<div class="product-item flex items-center justify-between p-2 sm:p-3 rounded-xl bg-slate-50 dark:bg-slate-800"><span class="text-xs sm:text-sm">${n}</span><b class="text-xs sm:text-sm">${q}</b></div>`).join('') || '<p class="text-slate-500 text-xs sm:text-sm">لا توجد مبيعات بعد</p>';
 
             const latest = [...state.invoices].sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0,6);
             $('#latest-invoices-table').innerHTML = latest.map(i => `
@@ -1340,50 +1227,104 @@
                     <td class="p-1 sm:p-2"><span class="px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg text-[9px] sm:text-[11px] font-bold ${i.status==='مدفوعة'?'bg-emerald-100 text-emerald-700':'bg-amber-100 text-amber-700'}">${i.status}</span></td>
                 </tr>
             `).join('') || '<tr><td colspan=5 class="p-4 text-center text-slate-500 text-xs sm:text-sm">لا توجد فواتير</td></tr>';
-
             $('#latest-invoices-cards').innerHTML = latest.map(i => `
                 <div class="dashboard-invoice-card">
-                    <div>
-                        <div class="number">${i.number}</div>
-                        <div class="customer">${i.customer.name}</div>
-                    </div>
-                    <div class="text-left">
-                        <div class="amount">${money(i.totals.ttc)}</div>
-                        <span class="status-badge ${i.status==='مدفوعة'?'bg-emerald-100 text-emerald-700':'bg-amber-100 text-amber-700'}">${i.status}</span>
-                    </div>
+                    <div><div class="number">${i.number}</div><div class="customer">${i.customer.name}</div></div>
+                    <div class="text-left"><div class="amount">${money(i.totals.ttc)}</div><span class="status-badge ${i.status==='مدفوعة'?'bg-emerald-100 text-emerald-700':'bg-amber-100 text-amber-700'}">${i.status}</span></div>
                 </div>
             `).join('') || '<div class="text-center text-slate-500 text-sm p-4">لا توجد فواتير</div>';
         }
 
         // ============================================================
-        //  PRODUCTS
+        //  PRODUCTS (مع تحسين حفظ الصور)
         // ============================================================
         let pendingAddToInvoice = false;
+        let currentImageData = ''; // لتخزين الصورة مؤقتاً أثناء تحرير المنتج
 
-        function handleImageFile(file) {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const dataUrl = e.target.result;
-                    if (dataUrl.length > 2 * 1024 * 1024) {
-                        showToast('⚠️ الصورة كبيرة جداً، قد تواجه مشكلة في الأداء', 'warning', 4000);
-                    }
-                    resolve(dataUrl);
-                };
-                reader.onerror = function() {
-                    showToast('فشل قراءة الصورة', 'error');
-                    resolve('');
-                };
-                reader.readAsDataURL(file);
+        // ===== دالة ضغط الصورة (محسّنة) =====
+        function compressImage(file, maxWidth = 400, maxHeight = 400, quality = 0.75) {
+            return new Promise((resolve, reject) => {
+                try {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const img = new Image();
+                            img.onload = function() {
+                                try {
+                                    let width = img.width;
+                                    let height = img.height;
+                                    // حساب النسبة للحفاظ على الأبعاد
+                                    if (width > maxWidth) {
+                                        height = (maxWidth / width) * height;
+                                        width = maxWidth;
+                                    }
+                                    if (height > maxHeight) {
+                                        width = (maxHeight / height) * width;
+                                        height = maxHeight;
+                                    }
+                                    const canvas = document.createElement('canvas');
+                                    canvas.width = Math.round(width);
+                                    canvas.height = Math.round(height);
+                                    const ctx = canvas.getContext('2d');
+                                    ctx.imageSmoothingEnabled = true;
+                                    ctx.imageSmoothingQuality = 'high';
+                                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                                    // تصدير كـ JPEG بجودة متوسطة (لحجم أصغر)
+                                    const dataUrl = canvas.toDataURL('image/jpeg', quality);
+                                    resolve(dataUrl);
+                                } catch(err) {
+                                    // إذا فشل الضغط، نعيد الصورة الأصلية
+                                    resolve(e.target.result);
+                                }
+                            };
+                            img.onerror = function() {
+                                // إذا فشل تحميل الصورة، نعيد البيانات الأصلية
+                                resolve(e.target.result);
+                            };
+                            img.src = e.target.result;
+                        } catch(err) {
+                            resolve(e.target.result);
+                        }
+                    };
+                    reader.onerror = function() {
+                        reject(new Error('فشل قراءة الملف'));
+                    };
+                    reader.readAsDataURL(file);
+                } catch(err) {
+                    reject(err);
+                }
             });
+        }
+
+        // ===== دالة معالجة الصورة (محسّنة) =====
+        async function handleImageFile(file) {
+            try {
+                // تحقق من حجم الملف الأصلي
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('⚠️ الصورة كبيرة جداً (أكثر من 5 ميجابايت)، سيتم ضغطها', 'warning', 3000);
+                }
+                // ضغط الصورة
+                const compressedData = await compressImage(file, 400, 400, 0.7);
+                // تحقق من حجم البيانات المضغوطة
+                if (compressedData.length > 2 * 1024 * 1024) {
+                    // إذا كانت لا تزال كبيرة، نضغط أكثر
+                    const secondCompress = await compressImage(file, 300, 300, 0.5);
+                    return secondCompress;
+                }
+                return compressedData;
+            } catch(err) {
+                console.error('خطأ في معالجة الصورة:', err);
+                showToast('فشل معالجة الصورة، حاول مرة أخرى', 'error');
+                return '';
+            }
         }
 
         function renderProducts() {
             $('#products-table').innerHTML = state.products.map(p => `
                 <tr class="border-b dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50">
                     <td class="p-3">
-                        ${p.image && p.image.startsWith('data:image') ? 
-                            `<img src="${p.image}" class="product-table-img" alt="${p.name}">` :
+                        ${p.image && p.image.startsWith('data:image') && p.image.length > 100 ? 
+                            `<img src="${p.image}" class="product-table-img" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="product-table-img-placeholder" style="display:none;"><i class="fa-solid fa-image"></i></div>` :
                             `<div class="product-table-img-placeholder"><i class="fa-solid fa-image"></i></div>`}
                     </td>
                     <td class="p-3 font-bold">${p.name}</td>
@@ -1408,9 +1349,9 @@
             $('#product-grid').innerHTML = list.map(p => `
                 <div class="product-grid-card" onclick="addItemById(${p.id})">
                     <button class="add-btn" onclick="event.stopPropagation(); addItemById(${p.id})" aria-label="إضافة المنتج">+</button>
-                    ${p.image && p.image.startsWith('data:image') ? 
-                        `<img src="${p.image}" alt="${p.name}">` :
-                        `<div class="w-16 h-16 rounded-xl bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-400"><i class="fa-solid fa-image text-2xl"></i></div>`}
+                    ${p.image && p.image.startsWith('data:image') && p.image.length > 100 ? 
+                        `<img src="${p.image}" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div style="display:none;width:64px;height:64px;border-radius:12px;background:#e2e8f0;display:none;align-items:center;justify-content:center;color:#94a3b8;font-size:24px;border:1px solid #e2e8f0;"><i class="fa-solid fa-image"></i></div>` :
+                        `<div style="width:64px;height:64px;border-radius:12px;background:#e2e8f0;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:24px;border:1px solid #e2e8f0;"><i class="fa-solid fa-image"></i></div>`}
                     <div class="product-name">${p.name}</div>
                     <div class="product-price">${money(p.price)}</div>
                     <div class="text-xs text-slate-500">${p.ref}</div>
@@ -1432,6 +1373,9 @@
             $('#modal-title').textContent = p ? 'تعديل منتج' : (ref ? 'إضافة منتج جديد من المسح' : 'منتج جديد');
             const refValue = p?.ref || ref || '';
             const imageSrc = p?.image || '';
+            // تخزين الصورة الحالية مؤقتاً
+            currentImageData = imageSrc;
+            
             $('#modal-body').innerHTML = `
                 <div class="grid sm:grid-cols-2 gap-3">
                     <div class="sm:col-span-2"><label class="text-xs">اسم المنتج</label><input id="p-name" value="${p?.name||''}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"></div>
@@ -1444,7 +1388,10 @@
                         <label class="text-xs">صورة المنتج</label>
                         <input id="p-image" type="file" accept="image/*" class="w-full text-sm">
                         <div id="p-image-preview" class="mt-2 ${imageSrc ? '' : 'hidden'}">
-                            <img src="${imageSrc}" class="w-20 h-20 rounded-xl object-cover border border-slate-200 dark:border-slate-700" id="p-image-preview-img">
+                            <div class="image-preview-container">
+                                <img src="${imageSrc}" class="w-24 h-24 rounded-xl object-cover border border-slate-200 dark:border-slate-700" id="p-image-preview-img">
+                                <button type="button" class="remove-image" onclick="document.getElementById('p-image-preview').classList.add('hidden'); document.getElementById('p-image').value=''; currentImageData='';" title="إزالة الصورة">✕</button>
+                            </div>
                         </div>
                     </div>
                     <div class="sm:col-span-2 flex gap-2 pt-2">
@@ -1453,25 +1400,43 @@
                     </div>
                 </div>
             `;
+            
+            // معالجة اختيار الصورة
             const fileInput = document.getElementById('p-image');
             const preview = document.getElementById('p-image-preview');
             const previewImg = document.getElementById('p-image-preview-img');
+            
             if (fileInput) {
                 fileInput.addEventListener('change', async function(e) {
                     const file = e.target.files[0];
                     if (file) {
                         try {
-                            const dataUrl = await handleImageFile(file);
-                            previewImg.src = dataUrl;
-                            preview.classList.remove('hidden');
-                            fileInput.dataset.imageData = dataUrl;
+                            // عرض معاينة فورية
+                            const tempReader = new FileReader();
+                            tempReader.onload = function(ev) {
+                                previewImg.src = ev.target.result;
+                                preview.classList.remove('hidden');
+                            };
+                            tempReader.readAsDataURL(file);
+                            
+                            // ضغط الصورة وحفظها
+                            const compressedData = await handleImageFile(file);
+                            if (compressedData) {
+                                currentImageData = compressedData;
+                                // تحديث المعاينة بالصورة المضغوطة
+                                previewImg.src = compressedData;
+                                preview.classList.remove('hidden');
+                                // تخزين البيانات في dataset للاستخدام عند الحفظ
+                                fileInput.dataset.imageData = compressedData;
+                            }
                         } catch(err) {
                             console.error('خطأ في تحميل الصورة:', err);
                             showToast('فشل تحميل الصورة', 'error');
                         }
                     } else {
-                        if (imageSrc) {
-                            previewImg.src = imageSrc;
+                        // إذا تم إلغاء اختيار الصورة
+                        if (currentImageData) {
+                            previewImg.src = currentImageData;
                             preview.classList.remove('hidden');
                         } else {
                             preview.classList.add('hidden');
@@ -1489,12 +1454,26 @@
                 
                 const fileInput = document.getElementById('p-image');
                 let imageData = '';
+                
+                // إذا كان هناك صورة جديدة في dataset
                 if (fileInput && fileInput.dataset && fileInput.dataset.imageData) {
                     imageData = fileInput.dataset.imageData;
+                } else if (currentImageData) {
+                    // استخدم الصورة المخزنة مؤقتاً
+                    imageData = currentImageData;
                 } else {
+                    // استخدم الصورة القديمة من المنتج (في حالة التعديل)
                     const existing = state.products.find(p => p.id === id);
                     imageData = existing ? existing.image || '' : '';
                 }
+                
+                // التحقق من صحة البيانات (تأكد من أنها سلسلة base64 صالحة)
+                if (imageData && !imageData.startsWith('data:image')) {
+                    // إذا لم تبدأ بـ data:image، ربما تكون بيانات فاسدة
+                    console.warn('بيانات صورة غير صالحة، تم تجاهلها');
+                    imageData = '';
+                }
+                
                 actuallySaveProduct(id, name, imageData);
             } catch(err) {
                 console.error('خطأ في حفظ المنتج:', err);
@@ -1508,6 +1487,39 @@
             const price = +$('#p-price').value || 0;
             const tva = +$('#p-tva').value || state.company.tva;
             const stock = +$('#p-stock').value || 0;
+            
+            // التأكد من أن بيانات الصورة لا تتجاوز الحد الأقصى
+            if (imageData && imageData.length > 1.5 * 1024 * 1024) {
+                // إذا كانت الصورة لا تزال كبيرة جداً، نضغطها مرة أخرى
+                showToast('⚠️ الصورة كبيرة جداً، جاري ضغطها...', 'warning', 2000);
+                // تحويل base64 إلى Blob مؤقتاً لضغطه مرة أخرى
+                try {
+                    const byteString = atob(imageData.split(',')[1]);
+                    const mimeType = imageData.split(',')[0].split(':')[1].split(';')[0];
+                    const ab = new ArrayBuffer(byteString.length);
+                    const ia = new Uint8Array(ab);
+                    for (let i = 0; i < byteString.length; i++) {
+                        ia[i] = byteString.charCodeAt(i);
+                    }
+                    const blob = new Blob([ab], { type: mimeType || 'image/jpeg' });
+                    // ضغط إضافي
+                    compressImage(blob, 250, 250, 0.4).then(compressed => {
+                        if (compressed.length < imageData.length) {
+                            imageData = compressed;
+                        }
+                        actuallySaveProductFinal(id, name, ref, buy, price, tva, stock, imageData);
+                    }).catch(() => {
+                        actuallySaveProductFinal(id, name, ref, buy, price, tva, stock, imageData);
+                    });
+                    return;
+                } catch(e) {
+                    // إذا فشل الضغط، نستمر بالبيانات الحالية
+                }
+            }
+            actuallySaveProductFinal(id, name, ref, buy, price, tva, stock, imageData);
+        }
+
+        function actuallySaveProductFinal(id, name, ref, buy, price, tva, stock, imageData) {
             const o = { id: id || Date.now(), name, ref, buy, price, tva, stock, image: imageData };
             let isNew = false;
             updateState(s => {
@@ -1531,7 +1543,13 @@
             checkLowStock();
         }
 
-        function editProduct(id) { openProduct(state.products.find(p => p.id === id)); }
+        function editProduct(id) { 
+            const p = state.products.find(p => p.id === id);
+            if (p) {
+                currentImageData = p.image || '';
+                openProduct(p);
+            }
+        }
 
         function delProduct(id) {
             if (confirm('حذف المنتج نهائياً؟')) {
@@ -1544,69 +1562,48 @@
         }
 
         // ============================================================
-        //  CUSTOMERS
+        //  CUSTOMERS (مختصر للاختصار)
         // ============================================================
         function renderCustomers() {
             $('#customers-table').innerHTML = state.customers.map(c => `<tr class="border-b dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50">
                 <td class="p-3 font-bold">${c.name}</td><td class="p-3">${c.phone||'-'}</td><td class="p-3 font-mono text-xs">${c.nif||'-'}</td>
                 <td class="p-3 font-mono text-xs">${c.nis||'-'}</td><td class="p-3 font-mono text-xs">${c.rc||'-'}</td><td class="p-3 font-mono text-xs">${c.ai||'-'}</td>
-                <td class="p-3"><div class="flex gap-1.5"><button class="w-8 h-8 grid place-items-center rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700" onclick="editCustomer(${c.id})" aria-label="تعديل"><i class="fa-solid fa-pen text-xs"></i></button><button class="w-8 h-8 grid place-items-center rounded-lg hover:bg-rose-100 text-rose-600" onclick="delCustomer(${c.id})" aria-label="حذف"><i class="fa-solid fa-trash text-xs"></i></button></div></td>
+                <td class="p-3"><div class="flex gap-1.5"><button class="w-8 h-8 grid place-items-center rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700" onclick="editCustomer(${c.id})"><i class="fa-solid fa-pen text-xs"></i></button><button class="w-8 h-8 grid place-items-center rounded-lg hover:bg-rose-100 text-rose-600" onclick="delCustomer(${c.id})"><i class="fa-solid fa-trash text-xs"></i></button></div></td>
             </tr>`).join('');
             const sel = $('#inv-customer');
-            if (sel) {
-                const current = sel.value;
-                sel.innerHTML = state.customers.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-                if (state.customers.some(c => c.id == current)) sel.value = current;
-            }
+            if (sel) { const current = sel.value; sel.innerHTML = state.customers.map(c => `<option value="${c.id}">${c.name}</option>`).join(''); if (state.customers.some(c => c.id == current)) sel.value = current; }
         }
         $('#btn-add-customer').onclick = $('#quick-add-customer').onclick = () => openCustomer();
-
         function openCustomer(c = null) {
             $('#modal-title').textContent = c ? 'تعديل عميل' : 'عميل جديد';
             $('#modal-body').innerHTML = `<div class="grid sm:grid-cols-2 gap-3">
-                <div class="sm:col-span-2"><label class="text-xs">الاسم / الشركة</label><input id="c-name" value="${c?.name||''}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
-                <div><label class="text-xs">الهاتف</label><input id="c-phone" value="${c?.phone||''}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
-                <div><label class="text-xs">العنوان</label><input id="c-addr" value="${c?.address||''}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
-                <div><label class="text-xs">NIF</label><input id="c-nif" value="${c?.nif||''}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
-                <div><label class="text-xs">NIS</label><input id="c-nis" value="${c?.nis||''}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
-                <div><label class="text-xs">RC</label><input id="c-rc" value="${c?.rc||''}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
-                <div><label class="text-xs">AI</label><input id="c-ai" value="${c?.ai||''}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
+                <div class="sm:col-span-2"><label>الاسم / الشركة</label><input id="c-name" value="${c?.name||''}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
+                <div><label>الهاتف</label><input id="c-phone" value="${c?.phone||''}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
+                <div><label>العنوان</label><input id="c-addr" value="${c?.address||''}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
+                <div><label>NIF</label><input id="c-nif" value="${c?.nif||''}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
+                <div><label>NIS</label><input id="c-nis" value="${c?.nis||''}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
+                <div><label>RC</label><input id="c-rc" value="${c?.rc||''}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
+                <div><label>AI</label><input id="c-ai" value="${c?.ai||''}" class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border"></div>
                 <div class="sm:col-span-2 flex gap-2 pt-2"><button onclick="saveCustomer(${c?.id||0})" class="flex-1 h-11 rounded-xl bg-sky-600 text-white font-bold">حفظ</button><button data-close class="w-28 h-11 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold">إلغاء</button></div>
             </div>`;
             showModal(true);
         }
-
         function saveCustomer(id) {
             const o = { id: id || Date.now(), name: $('#c-name').value.trim(), phone: $('#c-phone').value, address: $('#c-addr').value, nif: $('#c-nif').value, nis: $('#c-nis').value, rc: $('#c-rc').value, ai: $('#c-ai').value };
             if (!o.name) return showToast('ادخل الاسم', 'error');
-            updateState(s => {
-                if (id) { const idx = s.customers.findIndex(c => c.id === id); if (idx > -1) s.customers[idx] = o; } else s.customers.unshift(o);
-            });
-            showModal(false);
-            renderCustomers();
-            showToast('تم حفظ العميل', 'success');
+            updateState(s => { if (id) { const idx = s.customers.findIndex(c => c.id === id); if (idx > -1) s.customers[idx] = o; } else s.customers.unshift(o); } });
+            showModal(false); renderCustomers(); showToast('تم حفظ العميل', 'success');
         }
-
         function editCustomer(id) { openCustomer(state.customers.find(c => c.id === id)); }
-        function delCustomer(id) {
-            if (confirm('حذف العميل؟')) {
-                Sound.delete();
-                updateState(s => { s.customers = s.customers.filter(c => c.id !== id); });
-                renderCustomers();
-                showToast('تم حذف العميل', 'warning');
-            }
-        }
+        function delCustomer(id) { if (confirm('حذف العميل؟')) { Sound.delete(); updateState(s => { s.customers = s.customers.filter(c => c.id !== id); }); renderCustomers(); showToast('تم حذف العميل', 'warning'); } }
 
         // ============================================================
-        //  INVOICES LIST + EDIT BUTTON
+        //  INVOICES LIST
         // ============================================================
         function renderInvoices() {
             const f = $('#filter-status').value;
             const rows = state.invoices.filter(i => f === 'all' ? 1 : i.status === f).map(i => {
-                let rowClass = '';
-                if (i.status === 'مدفوعة') rowClass = 'row-paid';
-                else if (i.status === 'غير مدفوعة') rowClass = 'row-unpaid';
-                else if (i.status === 'ملغاة') rowClass = 'row-cancelled';
+                let rowClass = i.status === 'مدفوعة' ? 'row-paid' : i.status === 'غير مدفوعة' ? 'row-unpaid' : 'row-cancelled';
                 const statusOptions = ['غير مدفوعة', 'مدفوعة', 'ملغاة'];
                 return `<tr class="invoice-row ${rowClass} border-b dark:border-slate-800 transition">
                     <td class="p-3 font-mono">${i.number}</td>
@@ -1615,60 +1612,31 @@
                     <td class="p-3">${money(i.totals.ht)}</td>
                     <td class="p-3">${money(i.totals.tva)}</td>
                     <td class="p-3 font-bold">${money(i.totals.ttc)}</td>
-                    <td class="p-3">
-                        <select class="status-select" data-invoice-id="${i.id}" onchange="updateInvoiceStatus('${i.id}', this.value)">
-                            ${statusOptions.map(s => `<option value="${s}" ${i.status === s ? 'selected' : ''}>${s}</option>`).join('')}
-                        </select>
-                    </td>
-                    <td class="p-3">
-                        <div class="flex gap-1.5">
-                            <button class="w-8 h-8 grid place-items-center rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700" onclick="editInvoice('${i.id}')" aria-label="تعديل"><i class="fa-solid fa-pen text-xs"></i></button>
-                            <button class="w-8 h-8 grid place-items-center rounded-lg hover:bg-sky-100 text-sky-700" onclick="printInvoiceById('${i.id}')" aria-label="طباعة"><i class="fa-solid fa-print text-xs"></i></button>
-                            <button class="w-8 h-8 grid place-items-center rounded-lg hover:bg-rose-100 text-rose-600" onclick="delInvoice('${i.id}')" aria-label="حذف"><i class="fa-solid fa-trash text-xs"></i></button>
-                        </div>
-                    </td>
+                    <td class="p-3"><select class="status-select" data-invoice-id="${i.id}" onchange="updateInvoiceStatus('${i.id}', this.value)">${statusOptions.map(s => `<option value="${s}" ${i.status === s ? 'selected' : ''}>${s}</option>`).join('')}</select></td>
+                    <td class="p-3"><div class="flex gap-1.5"><button class="w-8 h-8 grid place-items-center rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700" onclick="editInvoice('${i.id}')"><i class="fa-solid fa-pen text-xs"></i></button><button class="w-8 h-8 grid place-items-center rounded-lg hover:bg-sky-100 text-sky-700" onclick="printInvoiceById('${i.id}')"><i class="fa-solid fa-print text-xs"></i></button><button class="w-8 h-8 grid place-items-center rounded-lg hover:bg-rose-100 text-rose-600" onclick="delInvoice('${i.id}')"><i class="fa-solid fa-trash text-xs"></i></button></div></td>
                 </tr>`;
             }).join('');
             $('#invoices-table').innerHTML = rows || '<tr><td colspan=8 class="p-6 text-center text-slate-500">لا توجد فواتير</td></tr>';
         }
         $('#filter-status').onchange = renderInvoices;
-
         function updateInvoiceStatus(id, newStatus) {
             const invoice = state.invoices.find(i => i.id === id);
             if (!invoice) return;
             if (invoice.status === newStatus) return;
             updateState(s => { const inv = s.invoices.find(i => i.id === id); if (inv) inv.status = newStatus; });
             showToast(`تم تغيير حالة الفاتورة ${invoice.number} إلى "${newStatus}"`, 'success');
-            renderDashboard();
-            checkOverdueInvoices();
+            renderDashboard(); checkOverdueInvoices();
         }
-
         function delInvoice(id) {
             if (confirm('حذف الفاتورة نهائياً؟')) {
                 const inv = state.invoices.find(i => i.id === id);
-                if (inv && inv.status !== 'ملغاة') {
-                    inv.items.forEach(it => {
-                        const p = state.products.find(x => x.id === it.productId);
-                        if (p) p.stock += it.qty;
-                    });
-                }
+                if (inv && inv.status !== 'ملغاة') { inv.items.forEach(it => { const p = state.products.find(x => x.id === it.productId); if (p) p.stock += it.qty; }); }
                 Sound.delete();
                 updateState(s => { s.invoices = s.invoices.filter(i => i.id !== id); });
-                renderInvoices();
-                renderDashboard();
-                showToast('تم حذف الفاتورة', 'warning');
-                checkOverdueInvoices();
-                checkLowStock();
+                renderInvoices(); renderDashboard(); showToast('تم حذف الفاتورة', 'warning'); checkOverdueInvoices(); checkLowStock();
             }
         }
-
-        function printInvoiceById(id) {
-            const inv = state.invoices.find(i => i.id === id);
-            if (!inv) return;
-            buildPrint(inv, true);
-            Sound.print();
-            window.print();
-        }
+        function printInvoiceById(id) { const inv = state.invoices.find(i => i.id === id); if (!inv) return; buildPrint(inv, true); Sound.print(); window.print(); }
 
         // ============================================================
         //  POS / CREATE INVOICE
@@ -1684,49 +1652,22 @@
                 const custSelect = $('#inv-customer');
                 if (custSelect) {
                     const custId = editData.customer.id;
-                    if (state.customers.some(c => c.id === custId)) {
-                        custSelect.value = custId;
-                    } else {
-                        custSelect.value = state.customers[0]?.id || '';
-                    }
+                    if (state.customers.some(c => c.id === custId)) custSelect.value = custId;
+                    else custSelect.value = state.customers[0]?.id || '';
                 }
                 $('#inv-notes').value = editData.notes || '';
                 $('#inv-status').value = editData.status || 'غير مدفوعة';
                 $('#inv-items').innerHTML = '';
                 editData.items.forEach(it => {
                     const prod = state.products.find(p => p.id === it.productId);
-                    if (prod) {
-                        addItemRow({
-                            id: it.productId,
-                            qty: it.qty,
-                            price: it.price,
-                            tva: it.tva,
-                            remise: it.remise || 0,
-                            name: prod.name
-                        });
-                    } else {
-                        addItemRow({
-                            id: it.productId,
-                            qty: it.qty,
-                            price: it.price,
-                            tva: it.tva,
-                            remise: it.remise || 0,
-                            name: it.name || 'منتج غير معروف'
-                        });
-                    }
+                    if (prod) addItemRow({ id: it.productId, qty: it.qty, price: it.price, tva: it.tva, remise: it.remise || 0, name: prod.name });
+                    else addItemRow({ id: it.productId, qty: it.qty, price: it.price, tva: it.tva, remise: it.remise || 0, name: it.name || 'منتج غير معروف' });
                 });
-                if (editData.items.length === 0) {
-                    addItemRow();
-                }
+                if (editData.items.length === 0) addItemRow();
                 calcTotals();
                 localStorage.removeItem('invoice_draft');
                 renderCustomers();
-                $('#btn-cancel-edit').onclick = function() {
-                    if (confirm('هل تريد إلغاء التعديل؟ سيتم فقدان التغييرات غير المحفوظة.')) {
-                        cancelEdit();
-                        go('invoices');
-                    }
-                };
+                $('#btn-cancel-edit').onclick = function() { if (confirm('إلغاء التعديل؟')) { cancelEdit(); go('invoices'); } };
                 return;
             }
 
@@ -1734,9 +1675,7 @@
             $('#edit-badge').classList.add('hidden');
             $('#btn-cancel-edit').classList.add('hidden');
             $('#btn-cancel-edit').onclick = null;
-            if (editingInvoiceId) {
-                cancelEdit();
-            }
+            if (editingInvoiceId) cancelEdit();
 
             const draft = localStorage.getItem('invoice_draft');
             if (draft) {
@@ -1774,10 +1713,6 @@
             const row = document.createElement('tr');
             row.dataset.id = id;
             row.className = 'border-b dark:border-slate-800';
-            let selectedName = '';
-            if (p && p.name) {
-                selectedName = p.name;
-            }
             row.innerHTML = `<td class="py-2 pr-1">
                 <select class="item-product w-full h-9 px-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs">
                     <option value="">-- اختر منتج --</option>
@@ -1793,9 +1728,7 @@
             <td class="py-2 pl-1"><button class="w-8 h-8 grid place-items-center rounded-lg hover:bg-rose-100 text-rose-600" onclick="this.closest('tr').remove(); calcTotals(); autoSaveDraft();" aria-label="حذف سطر"><i class="fa-solid fa-xmark text-xs"></i></button></td>`;
             $('#inv-items').appendChild(row);
             row.querySelectorAll('input,select').forEach(el => el.addEventListener('input', () => { calcTotals(); autoSaveDraft(); }));
-            if (p && p.name) {
-                row.dataset.name = p.name;
-            }
+            if (p && p.name) row.dataset.name = p.name;
             if (p) calcTotals();
             autoSaveDraft();
         }
@@ -1813,11 +1746,7 @@
         }
 
         $('#add-item').onclick = () => { addItemRow(); autoSaveDraft(); };
-
-        $('#product-search').addEventListener('input', function(e) {
-            const q = this.value.trim();
-            renderProductGrid(q);
-        });
+        $('#product-search').addEventListener('input', function(e) { const q = this.value.trim(); renderProductGrid(q); });
         $('#product-search').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 const q = this.value.trim();
@@ -1834,19 +1763,14 @@
                 const prod = state.products.find(p => p.id === pid);
                 const qty = +tr.querySelector('.item-qty').value || 0;
                 let price = +tr.querySelector('.item-price').value || 0;
-                if (prod && price === 0) {
-                    price = prod.price;
-                    tr.querySelector('.item-price').value = price;
-                }
+                if (prod && price === 0) { price = prod.price; tr.querySelector('.item-price').value = price; }
                 const tv = +tr.querySelector('.item-tva').value || 0;
                 const rem = +tr.querySelector('.item-rem').value || 0;
                 const lineHT = qty * price * (1 - rem/100);
                 const lineTVA = lineHT * tv/100;
                 ht += lineHT; tva += lineTVA;
                 tr.querySelector('.item-total').textContent = (lineHT + lineTVA).toFixed(2);
-                if (prod) {
-                    tr.dataset.name = prod.name;
-                }
+                if (prod) tr.dataset.name = prod.name;
             });
             const timbre = +state.company.timbre || 0;
             const ttc = ht + tva + timbre;
@@ -1869,13 +1793,7 @@
                     remise: +tr.querySelector('.item-rem').value
                 }));
                 if (items.length === 0) { localStorage.removeItem('invoice_draft'); return; }
-                const draft = {
-                    customerId: $('#inv-customer').value,
-                    date: $('#inv-date').value,
-                    notes: $('#inv-notes').value,
-                    status: $('#inv-status').value,
-                    items
-                };
+                const draft = { customerId: $('#inv-customer').value, date: $('#inv-date').value, notes: $('#inv-notes').value, status: $('#inv-status').value, items };
                 localStorage.setItem('invoice_draft', JSON.stringify(draft));
             } catch(e) {}
         }
@@ -1889,90 +1807,68 @@
                 const items = [...$$('#inv-items tr')].map(tr => {
                     const pid = +tr.querySelector('.item-product').value;
                     const prod = state.products.find(p => p.id === pid);
-                    return {
-                        productId: pid,
-                        name: tr.dataset.name || (prod ? prod.name : 'منتج غير معروف'),
-                        qty: +tr.querySelector('.item-qty').value,
-                        price: +tr.querySelector('.item-price').value,
-                        tva: +tr.querySelector('.item-tva').value,
-                        remise: +tr.querySelector('.item-rem').value
-                    };
+                    return { productId: pid, name: tr.dataset.name || (prod ? prod.name : 'منتج غير معروف'), qty: +tr.querySelector('.item-qty').value, price: +tr.querySelector('.item-price').value, tva: +tr.querySelector('.item-tva').value, remise: +tr.querySelector('.item-rem').value };
                 }).filter(it => it.qty > 0 && it.productId > 0);
 
                 if (items.length === 0) return showToast('أضف منتج واحد على الأقل', 'error');
                 const cust = state.customers.find(c => c.id === +$('#inv-customer').value);
                 if (!cust) return showToast('اختر عميلاً صحيحاً', 'error');
 
-                const inv = {
-                    id: editingInvoiceId || uid(),
-                    number: $('#inv-number').value,
-                    type: $('#inv-type').value,
-                    date: $('#inv-date').value,
-                    customer: cust,
-                    items: items,
-                    totals: totals,
-                    notes: $('#inv-notes').value,
-                    status: $('#inv-status').value,
-                    company: { ...state.company }
-                };
+                const inv = { id: editingInvoiceId || uid(), number: $('#inv-number').value, type: $('#inv-type').value, date: $('#inv-date').value, customer: cust, items, totals, notes: $('#inv-notes').value, status: $('#inv-status').value, company: { ...state.company } };
 
                 if (editingInvoiceId) {
                     const diff = calculateStockDifferences(originalInvoiceData.items, items);
                     updateState(s => {
                         Object.keys(diff).forEach(pid => {
                             const p = s.products.find(x => x.id === +pid);
-                            if (p) {
-                                const change = diff[pid];
-                                if (change !== 0) {
-                                    p.stock = Math.max(0, p.stock + change);
-                                }
-                            }
+                            if (p) { const change = diff[pid]; if (change !== 0) p.stock = Math.max(0, p.stock + change); }
                         });
                         const idx = s.invoices.findIndex(i => i.id === editingInvoiceId);
-                        if (idx !== -1) {
-                            s.invoices[idx] = inv;
-                        }
+                        if (idx !== -1) s.invoices[idx] = inv;
                     });
                     showToast(`تم تحديث الفاتورة ${inv.number}`, 'success');
                     cancelEdit();
-                    renderInvoices();
-                    renderDashboard();
-                    go('invoices');
+                    renderInvoices(); renderDashboard(); go('invoices');
                     return;
                 }
 
                 updateState(s => {
                     s.invoices.unshift(inv);
                     s.counters.inv++;
-                    items.forEach(it => {
-                        const p = s.products.find(x => x.id === it.productId);
-                        if (p) p.stock = Math.max(0, p.stock - it.qty);
-                    });
+                    items.forEach(it => { const p = s.products.find(x => x.id === it.productId); if (p) p.stock = Math.max(0, p.stock - it.qty); });
                 });
                 localStorage.removeItem('invoice_draft');
                 showToast('تم حفظ الفاتورة ' + inv.number, 'success');
                 notifyNewInvoice(inv);
-                renderInvoices();
-                renderDashboard();
-                go('invoices');
+                renderInvoices(); renderDashboard(); go('invoices');
             } catch(e) { console.error(e); showToast('خطأ في حفظ الفاتورة', 'error'); }
         };
 
-        // ============================================================
-        //  PRINT FULL INVOICE
-        // ============================================================
-        $('#print-invoice').onclick = () => {
-            const inv = collectCurrentInvoice();
-            if (inv) { Sound.print(); buildPrint(inv, true); window.print(); }
+        $('#print-invoice').onclick = () => { const inv = collectCurrentInvoice(); if (inv) { Sound.print(); buildPrint(inv, true); window.print(); } };
+        $('#print-purchase-list').onclick = () => { const inv = collectCurrentInvoice(); if (inv) { Sound.print(); buildPrint(inv, false); window.print(); } };
+        $('#save-pdf').onclick = async () => {
+            try {
+                const inv = collectCurrentInvoice();
+                if (!inv) return;
+                buildPrint(inv, true);
+                const el = $('#invoice-print');
+                const opt = { margin: 0.3, filename: inv.number + '.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } };
+                await html2pdf().set(opt).from(el).save();
+                showToast('تم تصدير PDF', 'success');
+            } catch(e) { console.error(e); showToast('فشل تصدير PDF', 'error'); }
         };
 
-        // ============================================================
-        //  PRINT PURCHASE LIST
-        // ============================================================
-        $('#print-purchase-list').onclick = () => {
-            const inv = collectCurrentInvoice();
-            if (inv) { Sound.print(); buildPrint(inv, false); window.print(); }
-        };
+        function collectCurrentInvoice() {
+            const totals = calcTotals();
+            const items = [...$$('#inv-items tr')].map(tr => {
+                const pid = +tr.querySelector('.item-product').value;
+                const prod = state.products.find(p => p.id === pid);
+                return { productId: pid, name: tr.dataset.name || (prod ? prod.name : 'منتج غير معروف'), qty: +tr.querySelector('.item-qty').value, price: +tr.querySelector('.item-price').value, tva: +tr.querySelector('.item-tva').value, remise: +tr.querySelector('.item-rem').value };
+            }).filter(it => it.qty > 0);
+            if (items.length === 0) { showToast('لا توجد منتجات في الفاتورة', 'error'); return null; }
+            const cust = state.customers.find(c => c.id === +$('#inv-customer').value);
+            return { number: $('#inv-number').value, type: $('#inv-type').value, date: $('#inv-date').value, customer: cust || state.customers[0], items, totals, notes: $('#inv-notes').value, status: $('#inv-status').value, company: { ...state.company } };
+        }
 
         // ============================================================
         //  PRINT BUILDER
@@ -1981,24 +1877,20 @@
             const comp = inv.company || state.company;
             const isPriceList = !showTotals;
             const title = isPriceList ? 'قائمة الشراء' : inv.type || 'فاتورة';
-            
             const itemsWithBuyPrice = inv.items.map(it => {
                 const prod = state.products.find(p => p.id === it.productId);
                 const buyPrice = prod ? prod.buy : 0;
                 const subtotal = it.qty * (isPriceList ? buyPrice : it.price);
                 return { ...it, buyPrice, subtotal };
             });
-
             const totals = showTotals ? inv.totals : null;
 
             $('#print-area').classList.remove('hidden');
-            
             let html = `
             <div id="invoice-print" dir="rtl" style="font-family:'Cairo',sans-serif;background:white;color:black;padding:0;">
                 <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #000;padding-bottom:12px;margin-bottom:18px;">
                     <div style="display:flex;gap:12px;">
-                        ${comp.logo ? `<img src="${comp.logo}" style="height:70px;width:70px;object-fit:contain;border:1px solid #ddd;border-radius:6px;padding:4px;background:white;">` :
-                        `<div style="width:70px;height:70px;background:#000;color:white;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;border-radius:8px;">F</div>`}
+                        ${comp.logo ? `<img src="${comp.logo}" style="height:70px;width:70px;object-fit:contain;border:1px solid #ddd;border-radius:6px;padding:4px;background:white;">` : `<div style="width:70px;height:70px;background:#000;color:white;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;border-radius:8px;">F</div>`}
                         <div>
                             <div class="print-company-name" style="font-size:28px;font-weight:900;color:#000;letter-spacing:-0.5px;">${comp.name}</div>
                             <div style="font-size:13px;color:#000;font-weight:600;">${comp.activity || ''}</div>
@@ -2021,8 +1913,7 @@
                         <div class="print-customer-details" style="font-size:11px;color:#000;">AI: ${inv.customer?.ai||'-'} | NIS: ${inv.customer?.nis||'-'}</div>
                     </div>
                     <div style="border:1px solid #000;border-radius:6px;padding:10px 14px;text-align:left;">
-                        ${isPriceList ? `<div style="font-size:12px;color:#000;">📋 قائمة شراء - غير ملزمة</div>` :
-                        `<div style="font-size:12px;color:#000;"><span style="font-weight:700;">الحالة:</span> ${inv.status}</div>`}
+                        ${isPriceList ? `<div style="font-size:12px;color:#000;">📋 قائمة شراء - غير ملزمة</div>` : `<div style="font-size:12px;color:#000;"><span style="font-weight:700;">الحالة:</span> ${inv.status}</div>`}
                         <div style="font-size:12px;color:#000;">طريقة الدفع: نقداً / تحويل</div>
                         ${comp.rib ? `<div style="font-size:12px;color:#000;">RIB: ${comp.rib}</div>` : ''}
                     </div>
@@ -2051,45 +1942,21 @@
             if (showTotals && totals) {
                 html += `
                 <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-top:18px;">
-                    <div>
-                        <div style="border:1px solid #000;border-radius:6px;padding:10px 14px;min-height:80px;">
-                            <div style="font-weight:700;font-size:13px;color:#000;margin-bottom:4px;">ملاحظات:</div>
-                            <div style="font-size:12px;color:#000;">${inv.notes || ''}</div>
-                        </div>
-                        <div style="margin-top:8px;border:1px solid #000;padding:4px;display:inline-block;background:#fff;">
-                            <canvas id="qr-print" style="width:90px;height:90px;"></canvas>
-                        </div>
-                    </div>
+                    <div><div style="border:1px solid #000;border-radius:6px;padding:10px 14px;min-height:80px;"><div style="font-weight:700;font-size:13px;color:#000;margin-bottom:4px;">ملاحظات:</div><div style="font-size:12px;color:#000;">${inv.notes || ''}</div></div><div style="margin-top:8px;border:1px solid #000;padding:4px;display:inline-block;background:#fff;"><canvas id="qr-print" style="width:90px;height:90px;"></canvas></div></div>
                     <div style="border:1px solid #000;border-radius:6px;padding:12px 14px;background:#f9f9f9;">
-                        <div style="display:flex;justify-content:space-between;font-size:14px;color:#000;padding:4px 0;border-bottom:1px solid #ddd;">
-                            <span style="font-weight:700;">المجموع HT</span><span style="font-weight:700;">${totals.ht.toFixed(2)} دج</span>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;font-size:14px;color:#000;padding:4px 0;border-bottom:1px solid #ddd;">
-                            <span style="font-weight:700;">TVA</span><span style="font-weight:700;">${totals.tva.toFixed(2)} دج</span>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;font-size:14px;color:#000;padding:4px 0;border-bottom:1px solid #ddd;">
-                            <span style="font-weight:700;">الطابع</span><span style="font-weight:700;">${totals.timbre.toFixed(2)} دج</span>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:900;color:#000;padding:8px 0;margin-top:4px;background:#e0e0e0;border-radius:4px;padding:8px 12px;border:2px solid #000;">
-                            <span>المجموع الكلي</span><span>${totals.ttc.toFixed(2)} دج</span>
-                        </div>
+                        <div style="display:flex;justify-content:space-between;font-size:14px;color:#000;padding:4px 0;border-bottom:1px solid #ddd;"><span style="font-weight:700;">المجموع HT</span><span style="font-weight:700;">${totals.ht.toFixed(2)} دج</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:14px;color:#000;padding:4px 0;border-bottom:1px solid #ddd;"><span style="font-weight:700;">TVA</span><span style="font-weight:700;">${totals.tva.toFixed(2)} دج</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:14px;color:#000;padding:4px 0;border-bottom:1px solid #ddd;"><span style="font-weight:700;">الطابع</span><span style="font-weight:700;">${totals.timbre.toFixed(2)} دج</span></div>
+                        <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:900;color:#000;padding:8px 0;margin-top:4px;background:#e0e0e0;border-radius:4px;padding:8px 12px;border:2px solid #000;"><span>المجموع الكلي</span><span>${totals.ttc.toFixed(2)} دج</span></div>
                     </div>
                 </div>`;
             } else {
                 const totalSubtotal = itemsWithBuyPrice.reduce((sum, it) => sum + it.subtotal, 0);
                 html += `
                 <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-top:18px;">
-                    <div>
-                        <div style="border:1px solid #000;border-radius:6px;padding:10px 14px;min-height:80px;">
-                            <div style="font-weight:700;font-size:13px;color:#000;margin-bottom:4px;">ملاحظات:</div>
-                            <div style="font-size:12px;color:#000;">${inv.notes || ''}</div>
-                        </div>
-                    </div>
+                    <div><div style="border:1px solid #000;border-radius:6px;padding:10px 14px;min-height:80px;"><div style="font-weight:700;font-size:13px;color:#000;margin-bottom:4px;">ملاحظات:</div><div style="font-size:12px;color:#000;">${inv.notes || ''}</div></div></div>
                     <div style="border:1px solid #000;border-radius:6px;padding:12px 14px;background:#f9f9f9;">
-                        <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:900;color:#000;padding:8px 0;border:2px solid #000;border-radius:4px;background:#e0e0e0;padding:8px 12px;">
-                            <span>المجموع الإجمالي</span>
-                            <span>${totalSubtotal.toFixed(2)} دج</span>
-                        </div>
+                        <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:900;color:#000;padding:8px 0;border:2px solid #000;border-radius:4px;background:#e0e0e0;padding:8px 12px;"><span>المجموع الإجمالي</span><span>${totalSubtotal.toFixed(2)} دج</span></div>
                         <div style="font-size:11px;color:#666;text-align:center;margin-top:6px;">* قائمة شراء غير ملزمة - الأسعار قابلة للتغيير</div>
                     </div>
                 </div>`;
@@ -2099,8 +1966,7 @@
                 <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:25px;border-top:1px solid #000;padding-top:14px;">
                     <div style="font-size:12px;color:#000;max-width:60%;">${comp.footer || ''}</div>
                     <div style="text-align:center;">
-                        ${comp.stamp ? `<img src="${comp.stamp}" style="max-height:70px;object-fit:contain;display:block;margin:0 auto;border:1px solid #ddd;border-radius:4px;padding:4px;background:white;">` :
-                        `<div style="border:2px dashed #000;border-radius:8px;padding:12px 20px;min-width:100px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#000;">الختم والتوقيع</div>`}
+                        ${comp.stamp ? `<img src="${comp.stamp}" style="max-height:70px;object-fit:contain;display:block;margin:0 auto;border:1px solid #ddd;border-radius:4px;padding:4px;background:white;">` : `<div style="border:2px dashed #000;border-radius:8px;padding:12px 20px;min-width:100px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#000;">الختم والتوقيع</div>`}
                         <div style="font-size:11px;font-weight:600;color:#000;margin-top:4px;">التوقيع</div>
                     </div>
                 </div>
@@ -2116,37 +1982,8 @@
             }
         }
 
-        function collectCurrentInvoice() {
-            const totals = calcTotals();
-            const items = [...$$('#inv-items tr')].map(tr => {
-                const pid = +tr.querySelector('.item-product').value;
-                const prod = state.products.find(p => p.id === pid);
-                return {
-                    productId: pid,
-                    name: tr.dataset.name || (prod ? prod.name : 'منتج غير معروف'),
-                    qty: +tr.querySelector('.item-qty').value,
-                    price: +tr.querySelector('.item-price').value,
-                    tva: +tr.querySelector('.item-tva').value,
-                    remise: +tr.querySelector('.item-rem').value
-                };
-            }).filter(it => it.qty > 0);
-            if (items.length === 0) { showToast('لا توجد منتجات في الفاتورة', 'error'); return null; }
-            const cust = state.customers.find(c => c.id === +$('#inv-customer').value);
-            return {
-                number: $('#inv-number').value,
-                type: $('#inv-type').value,
-                date: $('#inv-date').value,
-                customer: cust || state.customers[0],
-                items,
-                totals,
-                notes: $('#inv-notes').value,
-                status: $('#inv-status').value,
-                company: { ...state.company }
-            };
-        }
-
         // ============================================================
-        //  SETTINGS
+        //  SETTINGS (مختصر)
         // ============================================================
         function loadSettings() {
             const c = state.company;
@@ -2169,17 +2006,10 @@
         }
 
         $('#save-settings').onclick = () => {
-            updateState(s => {
-                s.company = { ...s.company, name: $('#set-company').value, activity: $('#set-activity').value,
-                    address: $('#set-address').value, phone: $('#set-phone').value, email: $('#set-email').value,
-                    nif: $('#set-nif').value, nis: $('#set-nis').value, rc: $('#set-rc').value, ai: $('#set-ai').value,
-                    rib: $('#set-rib').value, tva: +$('#set-tva').value, timbre: +$('#set-timbre').value,
-                    currency: $('#set-currency').value, footer: $('#set-footer').value };
-            });
+            updateState(s => { s.company = { ...s.company, name: $('#set-company').value, activity: $('#set-activity').value, address: $('#set-address').value, phone: $('#set-phone').value, email: $('#set-email').value, nif: $('#set-nif').value, nis: $('#set-nis').value, rc: $('#set-rc').value, ai: $('#set-ai').value, rib: $('#set-rib').value, tva: +$('#set-tva').value, timbre: +$('#set-timbre').value, currency: $('#set-currency').value, footer: $('#set-footer').value }; });
             showToast('تم حفظ الإعدادات', 'success');
             notifySystem('تم تحديث إعدادات المؤسسة');
         };
-
         $('#save-notif-settings').onclick = () => {
             const threshold = +document.getElementById('notif-stock-threshold').value || 5;
             const days = +document.getElementById('notif-overdue-days').value || 30;
@@ -2192,10 +2022,8 @@
                 s.notifications.settings.enableSystem = document.getElementById('notif-enable-system').checked;
             });
             showToast('تم حفظ إعدادات الإشعارات', 'success');
-            checkLowStock();
-            checkOverdueInvoices();
+            checkLowStock(); checkOverdueInvoices();
         };
-
         $('#logo-input').onchange = function(e) {
             const f = e.target.files[0]; if (!f) return;
             const r = new FileReader();
@@ -2208,7 +2036,6 @@
             r.onload = function() { updateState(s => { s.company.stamp = r.result; }); $('#stamp-preview').src = r.result; };
             r.readAsDataURL(f);
         };
-
         $('#toggle-dark').onchange = function(e) {
             document.documentElement.classList.toggle('dark', e.target.checked);
             localStorage.setItem('dark', e.target.checked ? '1' : '0');
@@ -2216,20 +2043,17 @@
             dot.style.right = e.target.checked ? '1.5rem' : '0.25rem';
         };
         if (localStorage.getItem('dark') === '1') { document.documentElement.classList.add('dark'); $('#toggle-dark').checked = true; $('#toggle-dark').nextElementSibling.querySelector('.dot').style.right = '1.5rem'; }
-
         $('#reset-data').onclick = () => { if (confirm('سيتم حذف كل البيانات نهائياً!')) { localStorage.removeItem(storeKey); localStorage.removeItem('invoice_draft'); location.reload(); } };
 
         // ============================================================
-        //  EXPORT / IMPORT (محسّن: تصدير كل البيانات كاملة)
+        //  EXPORT / IMPORT
         // ============================================================
         $('#btn-export').onclick = () => {
             try {
-                // نأخذ نسخة من الحالة كاملة (تحتوي على كل شيء: المنتجات، الفواتير، العملاء، الإعدادات، الإشعارات، العدادات)
                 const dataToExport = JSON.stringify(state, null, 2);
                 const blob = new Blob([dataToExport], { type: 'application/json' });
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(blob);
-                // اسم الملف يحتوي على التاريخ
                 const now = new Date();
                 const dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
                 a.download = `fawtara-backup-${dateStr}.json`;
@@ -2239,13 +2063,9 @@
                 URL.revokeObjectURL(a.href);
                 showToast('✅ تم تصدير النسخة الاحتياطية الكاملة', 'success');
                 notifySystem('✅ تم تصدير نسخة احتياطية كاملة للبيانات');
-            } catch(err) {
-                console.error(err);
-                showToast('فشل تصدير البيانات', 'error');
-            }
+            } catch(err) { console.error(err); showToast('فشل تصدير البيانات', 'error'); }
         };
 
-        // ===== استيراد البيانات =====
         $('#import-file').onchange = function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -2253,37 +2073,21 @@
             reader.onload = function(ev) {
                 try {
                     const importedData = JSON.parse(ev.target.result);
-                    // التحقق من صحة البيانات المستوردة (وجود الخصائص الأساسية)
                     if (!importedData.company || !Array.isArray(importedData.products) || !Array.isArray(importedData.customers) || !Array.isArray(importedData.invoices)) {
                         showToast('⚠️ الملف غير صالح: بيانات غير مكتملة', 'error');
                         return;
                     }
-                    // استبدال الحالة الحالية بالبيانات المستوردة
                     state = importedData;
-                    // التأكد من وجود notifications وإعداداته
-                    if (!state.notifications) {
-                        state.notifications = { items: [], settings: { lowStockThreshold: 5, overdueDays: 30, enableLowStock: true, enableOverdue: true, enableNewInvoice: true, enableSystem: true } };
-                    }
-                    if (!state.notifications.settings) {
-                        state.notifications.settings = { lowStockThreshold: 5, overdueDays: 30, enableLowStock: true, enableOverdue: true, enableNewInvoice: true, enableSystem: true };
-                    }
-                    // حفظ الحالة الجديدة
+                    if (!state.notifications) state.notifications = { items: [], settings: { lowStockThreshold: 5, overdueDays: 30, enableLowStock: true, enableOverdue: true, enableNewInvoice: true, enableSystem: true } };
+                    if (!state.notifications.settings) state.notifications.settings = { lowStockThreshold: 5, overdueDays: 30, enableLowStock: true, enableOverdue: true, enableNewInvoice: true, enableSystem: true };
                     saveState();
-                    // حذف المسودة إن وجدت
                     localStorage.removeItem('invoice_draft');
-                    // إعادة تحميل الصفحة لعرض البيانات الجديدة
                     showToast('✅ تم استيراد البيانات بنجاح! سيتم تحديث الصفحة...', 'success');
                     notifySystem('✅ تم استيراد نسخة احتياطية كاملة');
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1500);
-                } catch(err) {
-                    console.error('خطأ في الاستيراد:', err);
-                    showToast('❌ فشل استيراد الملف: تأكد من أنه ملف JSON صحيح', 'error');
-                }
+                    setTimeout(() => { location.reload(); }, 1500);
+                } catch(err) { console.error('خطأ في الاستيراد:', err); showToast('❌ فشل استيراد الملف', 'error'); }
             };
             reader.readAsText(file);
-            // إعادة تعيين قيمة الإدخال للسماح باختيار نفس الملف مرة أخرى
             e.target.value = '';
         };
 
@@ -2309,9 +2113,7 @@
 
         async function startScanner(cameraId) {
             try {
-                if (html5Qr) {
-                    try { await html5Qr.stop(); } catch(e) {}
-                }
+                if (html5Qr) { try { await html5Qr.stop(); } catch(e) {} }
                 html5Qr = new Html5Qrcode("reader");
                 const config = { fps: 10, qrbox: 250 };
                 await html5Qr.start(cameraId, config, onScanSuccess);
@@ -2331,66 +2133,32 @@
         function onScanSuccess(decodedText) {
             try { if (html5Qr) html5Qr.stop(); } catch(e) {}
             $('#scanner').classList.add('hidden');
-
             const prod = state.products.find(p => p.ref === decodedText);
-            if (prod) {
-                addItemById(prod.id);
-                go('pos');
-                showToast('تم إضافة المنتج: ' + prod.name, 'success');
-            } else {
-                if (confirm(`الباركود "${decodedText}" غير مسجل. هل تريد إضافة منتج جديد بهذا المرجع؟`)) {
-                    openProduct(null, decodedText, true);
-                } else {
-                    showToast('الباركود: ' + decodedText + ' (غير مسجل)', 'info');
-                }
-            }
+            if (prod) { addItemById(prod.id); go('pos'); showToast('تم إضافة المنتج: ' + prod.name, 'success'); }
+            else { if (confirm(`الباركود "${decodedText}" غير مسجل. هل تريد إضافة منتج جديد؟`)) openProduct(null, decodedText, true); else showToast('الباركود: ' + decodedText + ' (غير مسجل)', 'info'); }
         }
 
         $('#btn-scan').onclick = $('#btn-scan-add').onclick = async function() {
             try {
                 Sound.camera();
                 $('#scanner').classList.remove('hidden');
-
                 const cameras = await Html5Qrcode.getCameras();
-                if (cameras.length === 0) {
-                    showToast('لا توجد كاميرا متاحة', 'error');
-                    $('#scanner').classList.add('hidden');
-                    return;
-                }
+                if (cameras.length === 0) { showToast('لا توجد كاميرا متاحة', 'error'); $('#scanner').classList.add('hidden'); return; }
                 availableCameras = cameras;
-
                 let preferredId = localStorage.getItem('preferred_camera');
-                if (!preferredId || !cameras.some(c => c.id === preferredId)) {
-                    preferredId = getPreferredCameraId(cameras);
-                }
+                if (!preferredId || !cameras.some(c => c.id === preferredId)) { preferredId = getPreferredCameraId(cameras); }
                 if (!preferredId) preferredId = cameras[0].id;
-
                 await startScanner(preferredId);
-            } catch(err) {
-                console.error(err);
-                showToast('تعذر الوصول للكاميرا: ' + err.message, 'error');
-                $('#scanner').classList.add('hidden');
-            }
+            } catch(err) { console.error(err); showToast('تعذر الوصول للكاميرا: ' + err.message, 'error'); $('#scanner').classList.add('hidden'); }
         };
-
         $('#toggle-camera').onclick = async function() {
-            if (availableCameras.length < 2) {
-                showToast('لا توجد كاميرات أخرى للتبديل', 'warning');
-                return;
-            }
+            if (availableCameras.length < 2) { showToast('لا توجد كاميرات أخرى للتبديل', 'warning'); return; }
             const currentIndex = availableCameras.findIndex(c => c.id === currentCameraId);
             const nextIndex = (currentIndex + 1) % availableCameras.length;
             const nextCamera = availableCameras[nextIndex];
-            if (nextCamera) {
-                await startScanner(nextCamera.id);
-                showToast('تم التبديل إلى الكاميرا ' + (nextCamera.label || ''), 'success');
-            }
+            if (nextCamera) { await startScanner(nextCamera.id); showToast('تم التبديل إلى الكاميرا ' + (nextCamera.label || ''), 'success'); }
         };
-
-        $('#close-scan').onclick = async function() {
-            try { if (html5Qr) await html5Qr.stop(); } catch(e) {}
-            $('#scanner').classList.add('hidden');
-        };
+        $('#close-scan').onclick = async function() { try { if (html5Qr) await html5Qr.stop(); } catch(e) {} $('#scanner').classList.add('hidden'); };
 
         // ============================================================
         //  GLOBAL SEARCH
