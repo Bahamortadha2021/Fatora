@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>فَوْتَرَة - المتجر والسلة</title>
   <style>
-    /* جميع الأنماط السابقة مع تعديل لون الكمية في المتجر */
+    /* جميع الأنماط السابقة مع إضافة أنماط السلة المحسّنة */
     @font-face {
       font-family: "Optimistic";
       font-style: normal;
@@ -306,6 +306,26 @@
       .cart-modal-items {
         max-height: 300px !important;
       }
+      .cart-actions .btn {
+        font-size: 0.8rem !important;
+        padding: 0.4rem 0.6rem !important;
+        min-width: 70px !important;
+      }
+      .cart-item {
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+      }
+      .cart-item .ci-name {
+        width: 100% !important;
+        margin-bottom: 4px !important;
+      }
+      .cart-item .ci-price {
+        min-width: 60px !important;
+      }
+      .cart-item .ci-qty {
+        width: 50px !important;
+        height: 30px !important;
+      }
     }
     @media (min-width: 481px) and (max-width: 768px) {
       .dashboard-stats {
@@ -593,7 +613,6 @@
       align-items: center;
       margin-top: auto;
     }
-    /* تعديل لون الكمية ليصبح أسود واضح */
     .store-card .store-qty {
       width: 70px;
       height: 40px;
@@ -605,7 +624,6 @@
       font-weight: 700;
       padding: 0 4px;
       color: #000000 !important;
-      /* أسود واضح */
     }
     .dark .store-card .store-qty {
       background: #ffffff;
@@ -1060,6 +1078,167 @@
       font-size: 0.8rem;
       color: #64748b;
     }
+
+    /* ====== أنماط السلة المحسّنة ====== */
+    .cart-modal-items {
+      max-height: 400px;
+      overflow-y: auto;
+      margin: 0 -4px;
+    }
+    .cart-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #f8fafc;
+      margin-bottom: 6px;
+      transition: background 0.15s;
+      gap: 10px;
+      border: 1px solid transparent;
+    }
+    .dark .cart-item {
+      background: #1e293b;
+      border-color: #334155;
+    }
+    .cart-item:hover {
+      background: #f1f5f9;
+      border-color: #e2e8f0;
+    }
+    .dark .cart-item:hover {
+      background: #0f172a;
+      border-color: #475569;
+    }
+    .cart-item .ci-name {
+      flex: 1;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #0f172a;
+    }
+    .dark .cart-item .ci-name {
+      color: #f1f5f9;
+    }
+    .cart-item .ci-qty-wrap {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .cart-item .ci-qty {
+      width: 56px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      text-align: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      background: white;
+      color: #0f172a;
+    }
+    .dark .cart-item .ci-qty {
+      border-color: #475569;
+      background: #0f172a;
+      color: #e2e8f0;
+    }
+    .cart-item .ci-price {
+      font-weight: 700;
+      color: #0ea5e9;
+      min-width: 90px;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+    .cart-item .ci-remove {
+      background: none;
+      border: none;
+      color: #ef4444;
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 4px 8px;
+      border-radius: 8px;
+      transition: 0.15s;
+    }
+    .cart-item .ci-remove:hover {
+      background: #fee2e2;
+    }
+    .dark .cart-item .ci-remove:hover {
+      background: #7f1d1d;
+    }
+    .cart-total {
+      font-size: 1.2rem;
+      font-weight: 900;
+      text-align: left;
+      padding: 12px 0;
+      border-top: 2px solid #e2e8f0;
+      margin-top: 8px;
+      color: #0f172a;
+    }
+    .dark .cart-total {
+      border-color: #334155;
+      color: #f1f5f9;
+    }
+    .cart-total span {
+      color: #0ea5e9;
+    }
+    .cart-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    .cart-actions .btn {
+      height: 44px;
+      padding: 0 20px;
+      border-radius: 12px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex: 1;
+      min-width: 100px;
+      font-size: 0.9rem;
+    }
+    .cart-actions .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+    .cart-actions .btn-danger:hover {
+      background: #dc2626;
+    }
+    .cart-actions .btn-success {
+      background: #22c55e;
+      color: white;
+    }
+    .cart-actions .btn-success:hover {
+      background: #16a34a;
+    }
+    .cart-actions .btn-secondary {
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+    .dark .cart-actions .btn-secondary {
+      background: #334155;
+      color: #f1f5f9;
+    }
+    .cart-actions .btn-secondary:hover {
+      background: #cbd5e1;
+    }
+    .dark .cart-actions .btn-secondary:hover {
+      background: #475569;
+    }
+    .cart-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: #94a3b8;
+    }
+    .cart-empty i {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+    /* نهاية أنماط السلة */
   </style>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -1647,6 +1826,26 @@
       try {
         localStorage.setItem(CART_KEY, JSON.stringify(cart));
       } catch (e) {}
+    }
+
+    // دالة تفريغ السلة
+    function clearCart() {
+      if (cart.length === 0) {
+        showToast('السلة فارغة بالفعل', 'warning');
+        return;
+      }
+      if (confirm('هل تريد تفريغ سلة المشتريات بالكامل؟')) {
+        cart = [];
+        saveCart();
+        updateCartBadge();
+        // إذا كان المودال مفتوحاً نعيد رسمه
+        const modal = $('#modal');
+        if (!modal.classList.contains('hidden')) {
+          renderCartModal();
+        }
+        showToast('تم تفريغ السلة', 'success');
+        Sound.delete();
+      }
     }
 
     async function loadState() {
@@ -3228,7 +3427,7 @@
     };
 
     // ================================================================
-    //  CART FUNCTIONS
+    //  CART FUNCTIONS (مع تحسين عرض السلة)
     // ================================================================
     function addToCart(productId, qty) {
       const prod = state.products.find(p => p.id === productId);
@@ -3283,7 +3482,7 @@
     }
 
     // ================================================================
-    //  CART MODAL
+    //  CART MODAL (عرض محسّن واحترافي)
     // ================================================================
     function renderCartModal() {
       const modal = $('#modal');
@@ -3293,10 +3492,10 @@
 
       if (cart.length === 0) {
         body.innerHTML = `
-          <div class="text-center p-6 text-slate-500">
-            <i class="fa-solid fa-cart-plus text-4xl mb-3 block"></i>
-            <p>السلة فارغة</p>
-            <button data-close class="mt-4 h-10 px-6 rounded-xl bg-sky-600 text-white font-bold">العودة إلى المتجر</button>
+          <div class="cart-empty">
+            <i class="fa-regular fa-cart-plus"></i>
+            <p>سلة المشتريات فارغة</p>
+            <button data-close class="mt-4 h-10 px-6 rounded-xl bg-sky-600 text-white font-bold hover:bg-sky-700 transition">العودة إلى المتجر</button>
           </div>
         `;
         showModal(true);
@@ -3312,28 +3511,44 @@
         total += subtotal;
         html += `
           <div class="cart-item">
-            <span class="ci-name">${item.name}</span>
-            <input type="number" min="1" max="${prod?.stock || 999}" value="${item.qty}" class="ci-qty" data-id="${item.productId}">
-            <span class="ci-price">${money(subtotal)}</span>
-            <button class="ci-remove" data-id="${item.productId}" aria-label="حذف"><i class="fa-solid fa-trash"></i></button>
+            <div class="ci-name">${item.name}</div>
+            <div class="ci-qty-wrap">
+              <input type="number" min="1" max="${prod?.stock || 999}" value="${item.qty}" class="ci-qty" data-id="${item.productId}">
+            </div>
+            <div class="ci-price">${money(subtotal)}</div>
+            <button class="ci-remove" data-id="${item.productId}" aria-label="حذف"><i class="fa-regular fa-trash-can"></i></button>
           </div>
         `;
       }
       html += `</div>
-        <div class="cart-total">المجموع: ${money(total)}</div>
-        <div class="flex gap-2 mt-4">
-          <button id="cart-checkout" class="flex-1 h-11 rounded-xl bg-emerald-600 text-white font-bold"><i class="fa-solid fa-check"></i> إنهاء الطلب</button>
-          <button data-close class="h-11 px-4 rounded-xl bg-slate-200 dark:bg-slate-700 font-bold">مواصلة التسوق</button>
+        <div class="cart-total">المجموع الكلي: <span>${money(total)}</span></div>
+        <div class="cart-actions">
+          <button class="btn btn-danger" onclick="clearCart()">
+            <i class="fa-regular fa-trash-can"></i> تفريغ السلة
+          </button>
+          <button class="btn btn-success" id="cart-checkout">
+            <i class="fa-regular fa-check-circle"></i> إنهاء الطلب
+          </button>
+          <button data-close class="btn btn-secondary">
+            <i class="fa-regular fa-xmark"></i> إغلاق
+          </button>
         </div>
       `;
       body.innerHTML = html;
       showModal(true);
 
+      // ربط الأحداث
       body.querySelectorAll('.ci-qty').forEach(inp => {
         inp.addEventListener('change', function() {
           const id = +this.dataset.id;
           const val = +this.value || 1;
           updateCartQty(id, val);
+        });
+        inp.addEventListener('input', function() {
+          // منع القيم السالبة
+          if (this.value < 1) this.value = 1;
+          const max = +this.max || 999;
+          if (this.value > max) this.value = max;
         });
       });
       body.querySelectorAll('.ci-remove').forEach(btn => {
